@@ -344,6 +344,133 @@ h1 {
 .modal h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
 .modal p { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
 .modal-actions { display: flex; gap: 10px; }
+
+/* ── MODE TABS ── */
+.mode-tabs {
+  display: flex; gap: 6px; justify-content: center;
+  margin-bottom: 32px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 5px;
+}
+.mode-tab {
+  flex: 1; padding: 10px 20px; border-radius: 8px;
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; border: none; transition: all 0.2s;
+  color: var(--muted); background: transparent;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.mode-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 12px rgba(124,106,247,0.35); }
+.mode-tab:not(.active):hover { color: var(--text); background: var(--surface2); }
+
+/* ── COURSE CREATOR ── */
+#courseCreatorWizard { display: none; animation: fadeUp 0.35s ease; }
+
+.course-creator-label {
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  margin-bottom: 10px; letter-spacing: 0.02em;
+}
+.course-topic-input {
+  width: 100%; background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+  color: var(--text); font-family: 'Inter', sans-serif;
+  font-size: 15px; outline: none;
+  transition: border-color 0.2s; margin-bottom: 24px;
+}
+.course-topic-input:focus { border-color: var(--accent); }
+.course-topic-input::placeholder { color: var(--muted); }
+
+.format-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-bottom: 20px;
+}
+.format-card {
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 20px 16px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; cursor: pointer; transition: all 0.2s;
+  position: relative;
+}
+.format-card.active {
+  background: rgba(124,106,247,0.1);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.format-card.disabled {
+  opacity: 0.38; cursor: not-allowed;
+  pointer-events: none;
+}
+.format-card .fc-icon { font-size: 26px; }
+.format-card .fc-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: var(--muted);
+}
+.format-card.active .fc-label { color: var(--text); }
+
+.context-checkbox-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 13px 16px;
+  margin-bottom: 14px; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.context-checkbox-row:hover { border-color: var(--accent); }
+.context-checkbox-row input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: var(--accent);
+  cursor: pointer; flex-shrink: 0;
+}
+.context-checkbox-row label {
+  font-size: 14px; font-weight: 500; cursor: pointer; user-select: none;
+}
+
+#courseContextArea { display: none; margin-bottom: 6px; }
+.context-textarea {
+  width: 100%; background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 13px 15px;
+  color: var(--text); font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; resize: vertical; min-height: 100px;
+  outline: none; transition: border-color 0.2s;
+}
+.context-textarea:focus { border-color: var(--accent); }
+.context-textarea::placeholder { color: var(--muted); }
+
+.btn-course-generate {
+  width: 100%; padding: 15px;
+  background: #111118; border: 1px solid var(--border);
+  border-radius: 12px; color: var(--text);
+  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-top: 16px;
+}
+.btn-course-generate:hover {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 4px 24px rgba(124,106,247,0.4);
+  transform: translateY(-1px);
+}
+.btn-course-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Course creator inside app */
+#courseCreatorApp {
+  display: none; padding: 40px 48px 80px; max-width: 760px;
+  animation: fadeUp 0.35s ease;
+}
+.cca-label {
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  margin-bottom: 10px;
+}
+.cca-topic-input {
+  width: 100%; background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+  color: var(--text); font-family: 'Inter', sans-serif;
+  font-size: 15px; outline: none;
+  transition: border-color 0.2s; margin-bottom: 28px;
+}
+.cca-topic-input:focus { border-color: var(--accent); }
+.cca-topic-input::placeholder { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -369,11 +496,62 @@ h1 {
         <div class="logo-icon">🗺️</div>
         <span class="logo-text">Roadmap AI</span>
       </div>
-      <h1>AI Learning Plan<br/>Generator</h1>
-      <p class="subtitle">Answer 5 questions → get your personalized plan</p>
+      <h1 id="wizardTitle">AI Learning Plan<br/>Generator</h1>
+      <p class="subtitle" id="wizardSubtitle">Answer 5 questions → get your personalized plan</p>
     </header>
-    <div class="progress-track" id="progressTrack"></div>
-    <div class="q-card" id="questionCard"></div>
+
+    <!-- Mode tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tabPlan" onclick="switchWizardMode('plan')">📋 Learning Plan</button>
+      <button class="mode-tab" id="tabCourse" onclick="switchWizardMode('course')">📖 Course</button>
+    </div>
+
+    <!-- Plan wizard -->
+    <div id="planWizard">
+      <div class="progress-track" id="progressTrack"></div>
+      <div class="q-card" id="questionCard"></div>
+    </div>
+
+    <!-- Course creator wizard -->
+    <div id="courseCreatorWizard">
+      <div class="q-card">
+        <div class="course-creator-label">What can I help you learn?</div>
+        <input class="course-topic-input" id="courseTopicInput" type="text"
+          placeholder="e.g., Chess, Machine Learning, JavaScript, Photography..."
+          oninput="updateCourseGenBtn()" />
+
+        <div class="course-creator-label">Choose the format</div>
+        <div class="format-cards">
+          <div class="format-card active" onclick="selectFormat(this)">
+            <span class="fc-icon">📖</span>
+            <span class="fc-label">Course</span>
+          </div>
+          <div class="format-card disabled">
+            <span class="fc-icon">📄</span>
+            <span class="fc-label">Guide</span>
+          </div>
+          <div class="format-card disabled">
+            <span class="fc-icon">🗺️</span>
+            <span class="fc-label">Roadmap</span>
+          </div>
+        </div>
+
+        <div class="context-checkbox-row" onclick="toggleCourseContext()">
+          <input type="checkbox" id="contextCheckbox" />
+          <label for="contextCheckbox">Answer the following questions for a better course</label>
+        </div>
+
+        <div id="courseContextArea">
+          <textarea class="context-textarea" id="courseContextInput"
+            placeholder="What's your current skill level? Any specific focus areas? What do you want to achieve after this course?"></textarea>
+        </div>
+
+        <button class="btn-course-generate" id="courseGenBtn" onclick="startCourseGenerate()" disabled>
+          ✦ Generate
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -402,7 +580,7 @@ h1 {
         <div class="sidebar-item active" id="navPlan" onclick="showPlanView()">
           <span class="item-icon">📋</span> Plan
         </div>
-        <div class="sidebar-item" style="opacity:0.35;cursor:default;">
+        <div class="sidebar-item" id="navCourse" onclick="showCourseCreatorApp()">
           <span class="item-icon">📖</span> Course
         </div>
         <div class="sidebar-item" style="opacity:0.35;cursor:default;">
@@ -424,14 +602,51 @@ h1 {
 
       <!-- PLAN VIEW -->
       <div id="planView" style="padding:40px 48px 80px;max-width:900px;">
-        <div class="plan-breadcrumb">Learning Plan</div>
+        <div class="plan-breadcrumb" id="planBreadcrumb">Learning Plan</div>
         <div class="plan-title" id="planTitle"></div>
         <div class="plan-meta" id="planMeta"></div>
         <div class="plan-actions">
-          <button class="action-btn action-btn-ghost" onclick="openRevise()">↺ Revise Plan</button>
+          <button class="action-btn action-btn-ghost" id="revisePlanBtn" onclick="openRevise()">↺ Revise Plan</button>
           <button class="action-btn action-btn-danger" onclick="startOver()">🗑 Remove Plan</button>
         </div>
         <div id="stepsContainer"></div>
+      </div>
+
+      <!-- COURSE CREATOR (inside app) -->
+      <div id="courseCreatorApp">
+        <div class="plan-breadcrumb">Create with AI</div>
+        <div class="plan-title" style="margin-bottom:28px;">Create a Course</div>
+
+        <div class="cca-label">What can I help you learn?</div>
+        <input class="cca-topic-input" id="appCourseTopicInput" type="text"
+          placeholder="e.g., Chess, Machine Learning, JavaScript, Photography..."
+          oninput="updateAppCourseGenBtn()" />
+
+        <div class="course-creator-label">Choose the format</div>
+        <div class="format-cards" style="margin-bottom:20px;">
+          <div class="format-card active">
+            <span class="fc-icon">📖</span><span class="fc-label">Course</span>
+          </div>
+          <div class="format-card disabled">
+            <span class="fc-icon">📄</span><span class="fc-label">Guide</span>
+          </div>
+          <div class="format-card disabled">
+            <span class="fc-icon">🗺️</span><span class="fc-label">Roadmap</span>
+          </div>
+        </div>
+
+        <div class="context-checkbox-row" onclick="toggleAppCourseContext()">
+          <input type="checkbox" id="appContextCheckbox" />
+          <label for="appContextCheckbox">Answer the following questions for a better course</label>
+        </div>
+        <div id="appCourseContextArea" style="display:none;margin-bottom:6px;">
+          <textarea class="context-textarea" id="appCourseContextInput"
+            placeholder="What's your current skill level? Any specific focus areas? What do you want to achieve?"></textarea>
+        </div>
+
+        <button class="btn-course-generate" id="appCourseGenBtn" onclick="startAppCourseGenerate()" disabled>
+          ✦ Generate
+        </button>
       </div>
 
       <!-- LESSON VIEW -->
@@ -488,6 +703,149 @@ const STEP_LABELS = ['Goal','Field','Level','Focus','Context'];
 
 let current = 0, answers = {}, planData = null;
 let currentCourse = null, instructorHistory = [], loadingInterval;
+let activeMode = 'plan'; // 'plan' or 'course'
+
+// ── WIZARD MODE SWITCHING ──
+
+function switchWizardMode(mode) {
+  activeMode = mode;
+  document.getElementById('tabPlan').classList.toggle('active', mode === 'plan');
+  document.getElementById('tabCourse').classList.toggle('active', mode === 'course');
+  document.getElementById('planWizard').style.display = mode === 'plan' ? 'block' : 'none';
+  document.getElementById('courseCreatorWizard').style.display = mode === 'course' ? 'block' : 'none';
+  if (mode === 'plan') {
+    document.getElementById('wizardTitle').innerHTML = 'AI Learning Plan<br/>Generator';
+    document.getElementById('wizardSubtitle').textContent = 'Answer 5 questions → get your personalized plan';
+  } else {
+    document.getElementById('wizardTitle').innerHTML = 'AI Course<br/>Creator';
+    document.getElementById('wizardSubtitle').textContent = 'Type a topic → get a structured course';
+  }
+}
+
+function selectFormat(el) { /* Only Course is active, others are disabled */ }
+
+function toggleCourseContext() {
+  const cb = document.getElementById('contextCheckbox');
+  cb.checked = !cb.checked;
+  document.getElementById('courseContextArea').style.display = cb.checked ? 'block' : 'none';
+}
+
+function updateCourseGenBtn() {
+  const topic = document.getElementById('courseTopicInput').value.trim();
+  document.getElementById('courseGenBtn').disabled = topic.length === 0;
+}
+
+async function startCourseGenerate() {
+  const topic = document.getElementById('courseTopicInput').value.trim();
+  if (!topic) return;
+  const context = document.getElementById('contextCheckbox').checked
+    ? document.getElementById('courseContextInput').value.trim()
+    : '';
+  await runCourseGeneration(topic, context);
+}
+
+// ── COURSE CREATOR INSIDE APP ──
+
+function showCourseCreatorApp() {
+  document.getElementById('planView').style.display = 'none';
+  document.getElementById('lessonView').style.display = 'none';
+  document.getElementById('courseCreatorApp').style.display = 'block';
+  document.getElementById('navPlan').classList.remove('active');
+  document.getElementById('navCourse').classList.add('active');
+  document.getElementById('sidebarContent').innerHTML = '';
+}
+
+function toggleAppCourseContext() {
+  const cb = document.getElementById('appContextCheckbox');
+  cb.checked = !cb.checked;
+  document.getElementById('appCourseContextArea').style.display = cb.checked ? 'block' : 'none';
+}
+
+function updateAppCourseGenBtn() {
+  const topic = document.getElementById('appCourseTopicInput').value.trim();
+  document.getElementById('appCourseGenBtn').disabled = topic.length === 0;
+}
+
+async function startAppCourseGenerate() {
+  const topic = document.getElementById('appCourseTopicInput').value.trim();
+  if (!topic) return;
+  const context = document.getElementById('appContextCheckbox').checked
+    ? document.getElementById('appCourseContextInput').value.trim()
+    : '';
+  await runCourseGeneration(topic, context);
+}
+
+async function runCourseGeneration(topic, context = '') {
+  activeMode = 'course';
+
+  // Hide everything, show loading
+  document.getElementById('wizardPage').style.display = 'none';
+  document.getElementById('appPage').style.display = 'none';
+  const lp = document.getElementById('loadingPage');
+  lp.style.display = 'grid';
+  document.getElementById('loadingPage').querySelector('.loading-title').innerHTML = 'Building your course<span class="loading-dots"></span>';
+
+  let i = 0;
+  const lsEl = document.getElementById('loadingStatus');
+  const msgs = ['Analyzing the topic','Structuring modules','Designing lessons','Organizing the curriculum','Finalizing your course'];
+  lsEl.textContent = msgs[0];
+  loadingInterval = setInterval(() => { lsEl.textContent = msgs[++i % msgs.length]; }, 1800);
+
+  try {
+    const prompt = `You are an expert curriculum designer. Create a structured course as JSON only.
+
+Topic: "${topic}"
+${context ? `Additional context: ${context}` : ''}
+
+Return ONLY valid JSON (no markdown fences, no explanation):
+{
+  "title": "Short course title about ${topic}",
+  "tagline": "One sentence describing what students will learn",
+  "duration": "X weeks",
+  "steps": [
+    {
+      "id": 1,
+      "title": "Module Title",
+      "description": "One sentence description of this module",
+      "courses": ["Lesson Name 1","Lesson Name 2","Lesson Name 3","Lesson Name 4","Lesson Name 5"]
+    }
+  ]
+}
+
+Create 5-7 modules with 4-6 lessons each. Use specific, concrete lesson names directly about ${topic}. No generic filler names.`;
+
+    const raw = await callGroq([{ role: 'user', content: prompt }], 3000);
+    clearInterval(loadingInterval);
+
+    let parsed;
+    try {
+      const clean = raw.replace(/```json|```/g, '').trim();
+      parsed = JSON.parse(clean);
+    } catch {
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('Could not parse course. Please try again.');
+      parsed = JSON.parse(match[0]);
+    }
+
+    planData = parsed;
+    lp.style.display = 'none';
+    document.getElementById('appPage').style.display = 'block';
+    renderSidebar('plan');
+    renderPlanView('course');
+    document.getElementById('planView').style.display = 'block';
+    document.getElementById('lessonView').style.display = 'none';
+    document.getElementById('courseCreatorApp').style.display = 'none';
+    document.getElementById('navCourse').classList.add('active');
+    document.getElementById('navPlan').classList.remove('active');
+
+  } catch (err) {
+    clearInterval(loadingInterval);
+    lp.innerHTML = `<div style="text-align:center;padding:20px;">
+      <p style="color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:20px;">Error: ${err.message}</p>
+      <button class="btn btn-ghost" onclick="location.reload()">← Start Over</button>
+    </div>`;
+  }
+}
 
 // ── WIZARD ──
 
@@ -645,9 +1003,10 @@ Create 5-7 steps with 4-6 courses each. Use specific real technology/concept nam
     lp.style.display = 'none';
     document.getElementById('appPage').style.display = 'block';
     renderSidebar('plan');
-    renderPlanView();
+    renderPlanView('plan');
     document.getElementById('planView').style.display = 'block';
     document.getElementById('lessonView').style.display = 'none';
+    document.getElementById('courseCreatorApp').style.display = 'none';
 
   } catch (err) {
     clearInterval(loadingInterval);
@@ -662,21 +1021,24 @@ Create 5-7 steps with 4-6 courses each. Use specific real technology/concept nam
 
 function renderSidebar(mode) {
   const el = document.getElementById('sidebarContent');
+  const isCourse = activeMode === 'course';
   if (mode === 'plan') {
-    let html = `<div style="padding:8px 12px 4px;"><div class="sidebar-section-label">Steps</div></div><div class="plan-step-list">`;
+    const stepLabel = isCourse ? 'Modules' : 'Steps';
+    let html = `<div style="padding:8px 12px 4px;"><div class="sidebar-section-label">${stepLabel}</div></div><div class="plan-step-list">`;
     planData.steps.forEach((step,i) => {
+      const count = isCourse ? `${step.courses.length} lessons` : `${step.courses.length} courses`;
       html += `<div class="step-nav-item" id="sn${i}" onclick="scrollToStep(${i})">
         <div class="step-nav-num">${i+1}</div>
-        <div><div class="step-nav-title">${step.title}</div><div class="step-nav-count">${step.courses.length} courses</div></div>
+        <div><div class="step-nav-title">${step.title}</div><div class="step-nav-count">${count}</div></div>
       </div>`;
     });
     html += `</div>`;
     el.innerHTML = html;
   } else {
-    // Lesson outline
+    const stepBadgePrefix = isCourse ? 'MODULE' : 'STEP';
     let html = '';
     planData.steps.forEach((step,si) => {
-      html += `<div class="outline-step-header"><span class="outline-step-badge">STEP ${si+1}</span><span class="outline-step-name">${step.title}</span></div>`;
+      html += `<div class="outline-step-header"><span class="outline-step-badge">${stepBadgePrefix} ${si+1}</span><span class="outline-step-name">${step.title}</span></div>`;
       step.courses.forEach((course,ci) => {
         const active = currentCourse && currentCourse.si===si && currentCourse.ci===ci ? 'active' : '';
         html += `<div class="outline-course-item ${active}" onclick="openCourse(${si},${ci})">
@@ -688,20 +1050,27 @@ function renderSidebar(mode) {
   }
 }
 
-function renderPlanView() {
+function renderPlanView(mode) {
+  const isCourse = (mode === 'course') || (activeMode === 'course');
+  document.getElementById('planBreadcrumb').textContent = isCourse ? 'Course' : 'Learning Plan';
+  document.getElementById('revisePlanBtn').textContent = isCourse ? '↺ Revise Course' : '↺ Revise Plan';
   document.getElementById('planTitle').textContent = planData.title;
   const total = planData.steps.reduce((a,s) => a+s.courses.length, 0);
-  document.getElementById('planMeta').textContent = `${planData.steps.length} steps, ${total} courses`;
+  const stepLabel = isCourse ? 'modules' : 'steps';
+  const itemLabel = isCourse ? 'lessons' : 'courses';
+  document.getElementById('planMeta').textContent = `${planData.steps.length} ${stepLabel}, ${total} ${itemLabel}`;
 
   let html = '';
   planData.steps.forEach((step,si) => {
+    const badgeLabel = isCourse ? `MODULE ${si+1}` : `STEP ${si+1}`;
+    const countLabel = isCourse ? `${step.courses.length} lessons` : `${step.courses.length} courses`;
     html += `<div class="step-block" id="sb${si}">
       <div class="step-header">
         <div class="step-badge-row">
-          <div class="step-badge">STEP ${si+1}</div>
+          <div class="step-badge">${badgeLabel}</div>
           <div class="step-title-text">${step.title}</div>
         </div>
-        <div class="step-course-count">${step.courses.length} courses</div>
+        <div class="step-course-count">${countLabel}</div>
       </div>
       ${step.description ? `<p style="font-size:13px;color:var(--muted);margin:-4px 0 14px;">${step.description}</p>` : ''}
       <div class="course-list">`;
@@ -720,7 +1089,14 @@ function renderPlanView() {
 function showPlanView() {
   document.getElementById('planView').style.display = 'block';
   document.getElementById('lessonView').style.display = 'none';
-  document.getElementById('navPlan').classList.add('active');
+  document.getElementById('courseCreatorApp').style.display = 'none';
+  if (activeMode === 'course') {
+    document.getElementById('navCourse').classList.add('active');
+    document.getElementById('navPlan').classList.remove('active');
+  } else {
+    document.getElementById('navPlan').classList.add('active');
+    document.getElementById('navCourse').classList.remove('active');
+  }
   renderSidebar('plan');
 }
 
@@ -740,7 +1116,9 @@ async function openCourse(si, ci) {
 
   document.getElementById('planView').style.display = 'none';
   document.getElementById('lessonView').style.display = 'block';
+  document.getElementById('courseCreatorApp').style.display = 'none';
   document.getElementById('navPlan').classList.remove('active');
+  document.getElementById('navCourse').classList.remove('active');
   renderSidebar('lesson');
 
   document.getElementById('lessonTitle').textContent = courseName;
@@ -761,15 +1139,20 @@ async function openCourse(si, ci) {
 }
 
 async function generateLesson(courseName, stepTitle, stepNum) {
-  const prompt = `Write lesson content for: "${courseName}" (Step ${stepNum}: ${stepTitle})
-Learner: ${answers.field}, level: ${answers.level}
+  const isCourse = activeMode === 'course';
+  const learnerContext = isCourse
+    ? `Topic: ${planData?.title}, Module ${stepNum}: ${stepTitle}`
+    : `Learner: ${answers.field}, level: ${answers.level}`;
+
+  const prompt = `Write lesson content for: "${courseName}" (${isCourse ? 'Module' : 'Step'} ${stepNum}: ${stepTitle})
+${learnerContext}
 
 Return clean HTML content elements only (no DOCTYPE, no html/body tags).
 Structure:
 - 2-3 intro paragraphs
 - 3-4 sections with <h2> headings
 - Each section: 2-3 paragraphs
-- 1-2 code examples in <pre><code> where relevant  
+- 1-2 code examples in <pre><code> where relevant
 - End with <h2>Key Takeaways</h2> and a <ul>
 
 Use <h2>, <h3>, <p>, <ul>, <li>, <pre><code>, <strong>, <code> tags only. Be practical and specific.`;
@@ -840,7 +1223,7 @@ async function sendInstructorMessage() {
 
   try {
     const reply = await callGroq([
-      {role:'system',content:`You are an AI Instructor for "${currentCourse?.name}". Learner: ${answers.field}, level: ${answers.level}. Be helpful, concise (under 120 words unless example needed). Use **bold** for key terms.`},
+      {role:'system',content:`You are an AI Instructor for "${currentCourse?.name}". ${activeMode === 'course' ? `Course: ${planData?.title}` : `Learner field: ${answers.field}, level: ${answers.level}`}. Be helpful, concise (under 120 words unless example needed). Use **bold** for key terms.`},
       ...instructorHistory
     ], 500);
     removeTyping();
@@ -862,24 +1245,40 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 90) + 'px';
 }
 
-// ── REVISE ──
-
-function openRevise() { document.getElementById('reviseModal').classList.add('open'); document.getElementById('reviseInput').focus(); }
+function openRevise() {
+  document.getElementById('reviseModal').querySelector('h3').textContent = activeMode === 'course' ? '✏️ Revise Course' : '✏️ Revise Plan';
+  document.getElementById('reviseModal').classList.add('open');
+  document.getElementById('reviseInput').focus();
+}
 function closeRevise() { document.getElementById('reviseModal').classList.remove('open'); }
 async function applyRevise() {
   const note = document.getElementById('reviseInput').value.trim();
   if (!note) return;
   document.getElementById('reviseInput').value = '';
   closeRevise();
-  await startGenerate(note);
+  if (activeMode === 'course') {
+    // Re-run course generation with revision note baked into context
+    const topic = planData?.title || 'the same topic';
+    await runCourseGeneration(topic, `Revision: ${note}`);
+  } else {
+    await startGenerate(note);
+  }
 }
 document.getElementById('reviseModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeRevise(); });
 
 function startOver() {
   current = 0; answers = {}; planData = null; currentCourse = null; instructorHistory = [];
+  activeMode = 'plan';
   document.getElementById('appPage').style.display = 'none';
   document.getElementById('loadingPage').style.display = 'none';
   document.getElementById('wizardPage').style.display = 'flex';
+  // Reset course creator fields
+  document.getElementById('courseTopicInput').value = '';
+  document.getElementById('courseGenBtn').disabled = true;
+  document.getElementById('contextCheckbox').checked = false;
+  document.getElementById('courseContextArea').style.display = 'none';
+  // Reset to plan tab
+  switchWizardMode('plan');
   window.scrollTo({top:0});
   renderProgress(); renderQuestion();
 }
