@@ -3,596 +3,347 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI Learning Path Generator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<title>AI Learning Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #18181f;
-    --border: #252530;
-    --accent: #7c6af7;
-    --accent2: #4ecdaa;
-    --accent-glow: rgba(124, 106, 247, 0.25);
-    --text: #e8e8f0;
-    --muted: #6b6b80;
-    --danger: #f76a6a;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Background grid */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(124,106,247,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(124,106,247,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Orb */
-  body::after {
-    content: '';
-    position: fixed;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, rgba(124,106,247,0.12) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 24px 80px;
-  }
-
-  /* HEADER */
-  header {
-    padding: 40px 0 32px;
-    text-align: center;
-  }
-
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: grid;
-    place-items: center;
-    font-size: 18px;
-  }
-
-  .logo-text {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 800;
-    line-height: 1.1;
-    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 12px;
-  }
-
-  .subtitle {
-    color: var(--muted);
-    font-size: 1rem;
-    font-weight: 400;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* API KEY BAR */
-
-
-  /* STEPS WIZARD */
-  .wizard {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  /* Progress bar */
-  .progress-track {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin-bottom: 36px;
-  }
-
-  .prog-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-  }
-
-  .prog-bubble {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--surface2);
-    border: 2px solid var(--border);
-    display: grid;
-    place-items: center;
-    font-size: 12px;
-    font-weight: 700;
-    transition: all 0.3s;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--muted);
-  }
-
-  .prog-step.active .prog-bubble {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    box-shadow: 0 0 16px var(--accent-glow);
-  }
-
-  .prog-step.done .prog-bubble {
-    background: var(--accent2);
-    border-color: var(--accent2);
-    color: #000;
-  }
-
-  .prog-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-align: center;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    max-width: 70px;
-    line-height: 1.3;
-  }
-
-  .prog-step.active .prog-label { color: var(--accent); }
-  .prog-step.done .prog-label { color: var(--accent2); }
-
-  .prog-line {
-    flex: 1;
-    height: 2px;
-    background: var(--border);
-    margin-top: -20px;
-    align-self: flex-start;
-    transition: background 0.3s;
-  }
-
-  .prog-line.done { background: var(--accent2); }
-
-  /* QUESTION CARD */
-  .q-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    animation: fadeUp 0.4s ease;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .q-number {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 8px;
-  }
-
-  .q-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    line-height: 1.3;
-  }
-
-  /* Option buttons */
-  .options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .opt-btn {
-    background: var(--surface2);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .opt-btn:hover {
-    border-color: var(--accent);
-    background: rgba(124,106,247,0.1);
-    color: #fff;
-  }
-
-  .opt-btn.selected {
-    border-color: var(--accent);
-    background: rgba(124,106,247,0.15);
-    color: #fff;
-    box-shadow: inset 0 0 0 1px var(--accent);
-  }
-
-  .opt-icon {
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  /* Textarea */
-  .q-textarea {
-    width: 100%;
-    background: var(--surface2);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    resize: vertical;
-    min-height: 100px;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 24px;
-  }
-
-  .q-textarea:focus { border-color: var(--accent); }
-  .q-textarea::placeholder { color: var(--muted); }
-
-  /* Nav buttons */
-  .q-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .btn {
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    letter-spacing: 0.02em;
-  }
-
-  .btn-ghost {
-    background: transparent;
-    border: 1.5px solid var(--border);
-    color: var(--muted);
-  }
-
-  .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 4px 20px rgba(124,106,247,0.35);
-  }
-
-  .btn-primary:hover { background: #9180ff; box-shadow: 0 4px 28px rgba(124,106,247,0.5); transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  .btn-generate {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-    font-size: 15px;
-    padding: 14px 32px;
-    box-shadow: 0 4px 28px rgba(124,106,247,0.4);
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 6px 36px rgba(124,106,247,0.55); }
-
-  /* SUMMARY BEFORE GENERATE */
-  .summary-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .summary-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-  }
-
-  .summary-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    min-width: 80px;
-    font-family: 'JetBrains Mono', monospace;
-    padding-top: 1px;
-  }
-
-  .summary-value {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.4;
-  }
-
-  /* LOADING */
-  .loading-screen {
-    text-align: center;
-    padding: 60px 20px;
-    animation: fadeUp 0.4s ease;
-  }
-
-  .loader-ring {
-    width: 60px;
-    height: 60px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-right-color: var(--accent2);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 24px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .loading-sub {
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-  }
-
-  .loading-dots::after {
-    content: '';
-    animation: dots 1.4s infinite;
-  }
-
-  @keyframes dots {
-    0%   { content: ''; }
-    33%  { content: '.'; }
-    66%  { content: '..'; }
-    100% { content: '...'; }
-  }
-
-  /* RESULT */
-  .result-header {
-    text-align: center;
-    padding: 40px 0 32px;
-    animation: fadeUp 0.4s ease;
-  }
-
-  .result-badge {
-    display: inline-block;
-    background: rgba(78, 205, 170, 0.1);
-    border: 1px solid var(--accent2);
-    color: var(--accent2);
-    border-radius: 100px;
-    padding: 5px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-family: 'JetBrains Mono', monospace;
-    margin-bottom: 16px;
-  }
-
-  .result-title {
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
-    font-weight: 800;
-    margin-bottom: 8px;
-    background: linear-gradient(90deg, #fff 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .result-meta {
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-  }
-
-  /* PLAN OUTPUT */
-  .plan-output {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    animation: fadeUp 0.5s ease 0.1s both;
-  }
-
-  .plan-output pre {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--text);
-    padding: 28px;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-height: 600px;
-    overflow-y: auto;
-  }
-
-  /* Custom scrollbar */
-  .plan-output pre::-webkit-scrollbar { width: 6px; }
-  .plan-output pre::-webkit-scrollbar-track { background: var(--surface2); }
-  .plan-output pre::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-
-  /* Syntax highlighting in plan */
-  .plan-output pre .step-title { color: var(--accent); font-weight: 700; }
-  .plan-output pre .course-item { color: var(--accent2); }
-  .plan-output pre .tree-line { color: var(--muted); }
-  .plan-output pre .section-header { color: #fff; font-weight: 700; }
-
-  /* Streaming cursor */
-  .streaming-cursor {
-    display: inline-block;
-    width: 8px;
-    height: 14px;
-    background: var(--accent);
-    animation: blink 0.7s step-end infinite;
-    vertical-align: text-bottom;
-    margin-left: 2px;
-  }
-
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
-
-  /* Action buttons */
-  .action-bar {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-    animation: fadeUp 0.5s ease 0.2s both;
-  }
-
-  .btn-action {
-    flex: 1;
-    min-width: 150px;
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    letter-spacing: 0.02em;
-  }
-
-  .btn-regen {
-    background: transparent;
-    border: 1.5px solid var(--accent);
-    color: var(--accent);
-  }
-
-  .btn-regen:hover { background: rgba(124,106,247,0.1); }
-
-  .btn-revise {
-    background: transparent;
-    border: 1.5px solid var(--accent2);
-    color: var(--accent2);
-  }
-
-  .btn-revise:hover { background: rgba(78,205,170,0.1); }
-
-  .btn-new {
-    background: transparent;
-    border: 1.5px solid var(--border);
-    color: var(--muted);
-  }
-
-  .btn-new:hover { border-color: var(--muted); color: var(--text); }
-
-  /* ERROR */
-  .error-box {
-    background: rgba(247, 106, 106, 0.08);
-    border: 1px solid rgba(247,106,106,0.3);
-    border-radius: 10px;
-    padding: 16px 20px;
-    color: var(--danger);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    margin-top: 16px;
-    display: none;
-  }
-
-  /* REVISE MODAL */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    display: none;
-    place-items: center;
-    padding: 20px;
-  }
-
-  .modal-overlay.open { display: grid; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    max-width: 500px;
-    width: 100%;
-    animation: fadeUp 0.3s ease;
-  }
-
-  .modal h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
-  .modal p { color: var(--muted); font-size: 14px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
-
-  /* HIDDEN */
-  .hidden { display: none !important; }
+:root {
+  --bg: #0c0c12;
+  --sidebar-bg: #111118;
+  --surface: #16161f;
+  --surface2: #1e1e28;
+  --border: #25252f;
+  --accent: #7c6af7;
+  --accent2: #4ecdaa;
+  --accent-glow: rgba(124,106,247,0.2);
+  --text: #e4e4f0;
+  --muted: #64647a;
+  --muted2: #44445a;
+  --danger: #f76a6a;
+  --sidebar-w: 260px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh; overflow-x: hidden;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none; z-index: 0;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── WIZARD ── */
+#wizardPage {
+  min-height: 100vh; display: flex;
+  flex-direction: column; position: relative; z-index: 1;
+}
+.wizard-container {
+  max-width: 780px; margin: 0 auto;
+  padding: 0 24px 80px; width: 100%;
+}
+header { padding: 44px 0 36px; text-align: center; }
+.logo {
+  display: inline-flex; align-items: center;
+  gap: 10px; margin-bottom: 20px;
+}
+.logo-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px; display: grid; place-items: center; font-size: 16px;
+}
+.logo-text {
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  font-weight: 800; line-height: 1.1;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 55%, var(--accent2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 10px;
+}
+.subtitle { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.progress-track { display: flex; align-items: center; margin-bottom: 32px; }
+.prog-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.prog-bubble {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--surface2); border: 2px solid var(--border);
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace; color: var(--muted); transition: all 0.3s;
+}
+.prog-step.active .prog-bubble { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 14px var(--accent-glow); }
+.prog-step.done .prog-bubble { background: var(--accent2); border-color: var(--accent2); color: #000; }
+.prog-label {
+  font-size: 9px; color: var(--muted); font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; text-align: center; max-width: 60px;
+}
+.prog-step.active .prog-label { color: var(--accent); }
+.prog-step.done .prog-label { color: var(--accent2); }
+.prog-line { flex: 1; height: 2px; background: var(--border); margin-top: -18px; align-self: flex-start; transition: background 0.3s; }
+.prog-line.done { background: var(--accent2); }
+.q-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; animation: fadeUp 0.35s ease;
+}
+.q-number { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+.q-title { font-family: 'Syne', sans-serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 22px; line-height: 1.3; }
+.options-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin-bottom: 22px; }
+.opt-btn {
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 13px 15px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; text-align: left; transition: all 0.2s;
+  display: flex; align-items: center; gap: 10px;
+}
+.opt-btn:hover { border-color: var(--accent); background: rgba(124,106,247,0.08); color: #fff; }
+.opt-btn.selected { border-color: var(--accent); background: rgba(124,106,247,0.14); color: #fff; box-shadow: inset 0 0 0 1px var(--accent); }
+.opt-icon { font-size: 17px; flex-shrink: 0; }
+.q-textarea {
+  width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 13px 15px; color: var(--text);
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  resize: vertical; min-height: 95px; outline: none;
+  transition: border-color 0.2s; margin-bottom: 22px;
+}
+.q-textarea:focus { border-color: var(--accent); }
+.q-textarea::placeholder { color: var(--muted); }
+.q-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.btn { padding: 11px 22px; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.02em; }
+.btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--muted); }
+.btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 18px rgba(124,106,247,0.3); }
+.btn-primary:hover { background: #9180ff; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn-generate {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; font-size: 14px; padding: 13px 30px;
+  box-shadow: 0 4px 24px rgba(124,106,247,0.35); width: 100%; margin-top: 4px;
+}
+.btn-generate:hover { transform: translateY(-2px); box-shadow: 0 6px 32px rgba(124,106,247,0.5); }
+
+/* ── LOADING ── */
+#loadingPage {
+  display: none; min-height: 100vh;
+  place-items: center; text-align: center;
+  padding: 20px; position: relative; z-index: 1;
+}
+.loader-ring {
+  width: 56px; height: 56px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-right-color: var(--accent2);
+  border-radius: 50%; animation: spin 0.75s linear infinite;
+  margin: 0 auto 20px;
+}
+.loading-title { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+.loading-sub { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.loading-dots::after { content: ''; animation: dots 1.4s infinite; }
+@keyframes dots { 0%{content:''} 33%{content:'.'} 66%{content:'..'} 100%{content:'...'} }
+
+/* ── APP LAYOUT ── */
+#appPage { display: none; min-height: 100vh; }
+.app-layout { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.app-sidebar {
+  width: var(--sidebar-w); background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  position: fixed; top: 0; left: 0; height: 100vh;
+  overflow-y: auto; z-index: 50; display: flex; flex-direction: column;
+}
+.app-sidebar::-webkit-scrollbar { width: 4px; }
+.app-sidebar::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 2px; }
+.sidebar-brand { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+.brand-logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px; display: grid; place-items: center;
+  font-size: 16px; margin-bottom: 10px;
+}
+.brand-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.brand-sub { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.sidebar-section { padding: 14px 12px 6px; }
+.sidebar-section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: var(--muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.sidebar-item:hover { background: var(--surface2); color: var(--text); }
+.sidebar-item.active { background: rgba(124,106,247,0.12); color: var(--accent); }
+.sidebar-item .item-icon { font-size: 14px; width: 18px; text-align: center; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
+
+/* Plan step nav */
+.plan-step-list { padding: 6px 12px; }
+.step-nav-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 8px; border-radius: 8px;
+  cursor: pointer; transition: background 0.15s; margin-bottom: 2px;
+}
+.step-nav-item:hover { background: var(--surface2); }
+.step-nav-item.active { background: rgba(124,106,247,0.1); }
+.step-nav-num {
+  width: 20px; height: 20px; border-radius: 5px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: grid; place-items: center;
+  font-size: 9px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted); flex-shrink: 0; margin-top: 1px;
+}
+.step-nav-item.active .step-nav-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+.step-nav-title { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.35; }
+.step-nav-count { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+/* Lesson outline sidebar */
+.outline-step-header { display: flex; align-items: center; gap: 8px; padding: 10px 16px 6px; }
+.outline-step-badge { font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace; background: var(--surface2); color: var(--muted); padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+.outline-step-name { font-size: 12px; font-weight: 600; color: var(--muted); }
+.outline-course-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 16px 7px 28px;
+  font-size: 12px; font-weight: 500; color: var(--muted);
+  cursor: pointer; transition: all 0.15s; line-height: 1.35;
+}
+.outline-course-item:hover { background: var(--surface2); color: var(--text); }
+.outline-course-item.active { background: rgba(124,106,247,0.1); color: var(--accent); border-right: 2px solid var(--accent); }
+.outline-num {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: grid; place-items: center;
+  font-size: 9px; font-weight: 700; flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+.outline-course-item.active .outline-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Main */
+.app-main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+
+/* Plan View */
+#planView { padding: 40px 48px 80px; max-width: 900px; }
+.plan-breadcrumb { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 16px; }
+.plan-title { font-family: 'Syne', sans-serif; font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; margin-bottom: 8px; line-height: 1.15; }
+.plan-meta { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+.plan-actions { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+.action-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px;
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; border: none;
+}
+.action-btn-ghost { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+.action-btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.action-btn-danger { background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+.action-btn-danger:hover { border-color: var(--danger); color: var(--danger); }
+.step-block { margin-bottom: 36px; animation: fadeUp 0.4s ease; }
+.step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.step-badge-row { display: flex; align-items: center; gap: 12px; }
+.step-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 6px; }
+.step-title-text { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
+.step-course-count { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.course-list { display: flex; flex-direction: column; gap: 6px; }
+.course-row {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 18px;
+  cursor: pointer; transition: all 0.2s;
+}
+.course-row:hover { border-color: var(--accent); background: rgba(124,106,247,0.05); transform: translateX(3px); }
+.course-num {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace; color: var(--muted); flex-shrink: 0;
+}
+.course-name { flex: 1; font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.35; }
+.course-arrow { color: var(--muted); font-size: 14px; flex-shrink: 0; transition: transform 0.2s; }
+.course-row:hover .course-arrow { transform: translate(2px, -2px); color: var(--accent); }
+
+/* Lesson View */
+#lessonView { display: none; }
+.lesson-layout { display: flex; min-height: 100vh; }
+.lesson-main { flex: 1; min-width: 0; padding: 32px 40px 80px; max-width: 680px; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  cursor: pointer; margin-bottom: 24px; transition: color 0.15s;
+  background: none; border: none; font-family: 'Inter', sans-serif; padding: 0;
+}
+.back-btn:hover { color: var(--text); }
+.lesson-title { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+.lesson-meta { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.lesson-progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin: 14px 0 28px; overflow: hidden; }
+.lesson-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.5s; }
+.lesson-content { line-height: 1.75; font-size: 15px; color: var(--text); }
+.lesson-content h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px; color: #fff; }
+.lesson-content h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin: 22px 0 8px; color: var(--text); }
+.lesson-content p { margin-bottom: 16px; color: #c4c4d8; }
+.lesson-content ul, .lesson-content ol { margin: 0 0 16px 20px; }
+.lesson-content li { margin-bottom: 6px; color: #c4c4d8; }
+.lesson-content code { background: var(--surface2); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent2); }
+.lesson-content pre { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; overflow-x: auto; margin-bottom: 16px; }
+.lesson-content pre code { background: none; border: none; padding: 0; font-size: 13px; color: var(--text); }
+.lesson-content strong { color: #fff; font-weight: 600; }
+.lesson-loading { display: flex; align-items: center; gap: 12px; padding: 24px 0; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.lesson-spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; flex-shrink: 0; }
+
+/* AI Instructor */
+.ai-instructor {
+  width: 300px; flex-shrink: 0;
+  background: var(--sidebar-bg); border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  height: 100vh; position: sticky; top: 0; overflow: hidden;
+}
+.instructor-header { padding: 16px 16px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.instructor-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); box-shadow: 0 0 6px var(--accent2); flex-shrink: 0; }
+.instructor-title-text { font-size: 13px; font-weight: 700; }
+.instructor-messages { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.instructor-messages::-webkit-scrollbar { width: 4px; }
+.instructor-messages::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 2px; }
+.msg { display: flex; gap: 8px; align-items: flex-start; animation: fadeUp 0.25s ease; }
+.msg-avatar { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; font-size: 12px; flex-shrink: 0; }
+.msg-ai .msg-avatar { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+.msg-user .msg-avatar { background: var(--surface2); border: 1px solid var(--border); }
+.msg-bubble { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 12px; line-height: 1.55; color: var(--text); max-width: 220px; }
+.msg-ai .msg-bubble { border-radius: 4px 10px 10px 10px; }
+.msg-user { flex-direction: row-reverse; }
+.msg-user .msg-bubble { background: rgba(124,106,247,0.12); border-color: rgba(124,106,247,0.3); border-radius: 10px 4px 10px 10px; }
+.suggested-qs { padding: 0 14px 10px; display: flex; flex-direction: column; gap: 5px; }
+.suggested-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 3px; }
+.sugg-q { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 11px; color: var(--muted); cursor: pointer; transition: all 0.15s; text-align: left; width: 100%; font-family: 'Inter', sans-serif; line-height: 1.4; }
+.sugg-q:hover { border-color: var(--accent); color: var(--text); background: rgba(124,106,247,0.06); }
+.sugg-q:disabled { opacity: 0.4; cursor: not-allowed; }
+.instructor-input-area { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-end; }
+.instructor-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 12px; outline: none; transition: border-color 0.2s; resize: none; min-height: 36px; max-height: 90px; }
+.instructor-input:focus { border-color: var(--accent); }
+.instructor-input::placeholder { color: var(--muted); }
+.send-btn { width: 32px; height: 32px; background: var(--accent); border: none; border-radius: 7px; cursor: pointer; display: grid; place-items: center; transition: all 0.2s; color: #fff; font-size: 13px; flex-shrink: 0; }
+.send-btn:hover { background: #9180ff; }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.typing-indicator .msg-bubble { display: flex; gap: 4px; align-items: center; padding: 12px; }
+.typing-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); animation: typingBounce 1.2s infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 200; display: none; place-items: center; padding: 20px; }
+.modal-overlay.open { display: grid; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; max-width: 480px; width: 100%; animation: fadeUp 0.3s ease; }
+.modal h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+.modal p { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+.modal-actions { display: flex; gap: 10px; }
 </style>
 </head>
 <body>
@@ -600,143 +351,156 @@
 <!-- REVISE MODAL -->
 <div class="modal-overlay" id="reviseModal">
   <div class="modal">
-    <h3>✏️ Revise Your Plan</h3>
-    <p>Tell the AI what you'd like to change about the learning plan:</p>
-    <textarea class="q-textarea" id="reviseInput" placeholder="e.g., Make it more beginner-friendly, focus more on backend, skip frameworks, add more practical projects..." style="min-height:120px;"></textarea>
-    <div style="display:flex;gap:10px;">
+    <h3>✏️ Revise Plan</h3>
+    <p>Tell the AI what you'd like changed:</p>
+    <textarea class="q-textarea" id="reviseInput" placeholder="e.g., Focus more on backend, add more practical projects, skip heavy theory..." style="min-height:110px"></textarea>
+    <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeRevise()">Cancel</button>
-      <button class="btn btn-primary" onclick="applyRevise()">Apply Changes</button>
+      <button class="btn btn-primary" onclick="applyRevise()">Apply</button>
     </div>
   </div>
 </div>
 
-<div class="container">
-  <!-- HEADER -->
-  <header>
-    <div class="logo">
-      <div class="logo-icon">🗺️</div>
-      <span class="logo-text">Roadmap AI</span>
-    </div>
-    <h1>AI Learning Path<br/>Generator</h1>
-    <p class="subtitle">Answer 5 questions → get a personalized roadmap</p>
-  </header>
-
-
-
-  <!-- WIZARD -->
-  <div class="wizard" id="wizard">
-
-    <!-- Progress -->
-    <div class="progress-track" id="progressTrack">
-      <!-- Filled by JS -->
-    </div>
-
-    <!-- Question Card -->
-    <div class="q-card" id="questionCard">
-      <!-- Filled by JS -->
-    </div>
-
+<!-- WIZARD -->
+<div id="wizardPage">
+  <div class="wizard-container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🗺️</div>
+        <span class="logo-text">Roadmap AI</span>
+      </div>
+      <h1>AI Learning Plan<br/>Generator</h1>
+      <p class="subtitle">Answer 5 questions → get your personalized plan</p>
+    </header>
+    <div class="progress-track" id="progressTrack"></div>
+    <div class="q-card" id="questionCard"></div>
   </div>
+</div>
 
-  <!-- LOADING -->
-  <div class="loading-screen hidden" id="loadingScreen">
+<!-- LOADING -->
+<div id="loadingPage" style="display:none;min-height:100vh;place-items:center;text-align:center;padding:20px;position:relative;z-index:1;">
+  <div>
     <div class="loader-ring"></div>
-    <div class="loading-title">Crafting your roadmap<span class="loading-dots"></span></div>
+    <div class="loading-title">Building your learning plan<span class="loading-dots"></span></div>
     <div class="loading-sub" id="loadingStatus">Analyzing your goals</div>
   </div>
+</div>
 
-  <!-- RESULT -->
-  <div class="hidden" id="resultView">
-    <div class="result-header">
-      <div class="result-badge">✓ Plan Ready</div>
-      <div class="result-title" id="planTitle">Your Learning Path</div>
-      <div class="result-meta" id="planMeta"></div>
-    </div>
-    <div class="plan-output">
-      <pre id="planOutput"></pre>
-    </div>
-    <div class="error-box" id="errorBox"></div>
-    <div class="action-bar">
-      <button class="btn-action btn-regen" onclick="regeneratePlan()">⟳ Regenerate Plan</button>
-      <button class="btn-action btn-revise" onclick="openRevise()">✏️ Revise Plan</button>
-      <button class="btn-action btn-new" onclick="startOver()">+ New Plan</button>
-    </div>
+<!-- APP -->
+<div id="appPage" style="display:none;">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo">🗺️</div>
+        <div class="brand-name">Roadmap AI</div>
+        <div class="brand-sub">Your personalized learning companion</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Create with AI</div>
+        <div class="sidebar-item active" id="navPlan" onclick="showPlanView()">
+          <span class="item-icon">📋</span> Plan
+        </div>
+        <div class="sidebar-item" style="opacity:0.35;cursor:default;">
+          <span class="item-icon">📖</span> Course
+        </div>
+        <div class="sidebar-item" style="opacity:0.35;cursor:default;">
+          <span class="item-icon">🗺️</span> Roadmap
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div id="sidebarContent"></div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-item" onclick="startOver()">
+          <span class="item-icon">＋</span> New Plan
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="app-main">
+
+      <!-- PLAN VIEW -->
+      <div id="planView" style="padding:40px 48px 80px;max-width:900px;">
+        <div class="plan-breadcrumb">Learning Plan</div>
+        <div class="plan-title" id="planTitle"></div>
+        <div class="plan-meta" id="planMeta"></div>
+        <div class="plan-actions">
+          <button class="action-btn action-btn-ghost" onclick="openRevise()">↺ Revise Plan</button>
+          <button class="action-btn action-btn-danger" onclick="startOver()">🗑 Remove Plan</button>
+        </div>
+        <div id="stepsContainer"></div>
+      </div>
+
+      <!-- LESSON VIEW -->
+      <div id="lessonView" style="display:none;">
+        <div class="lesson-layout">
+          <div class="lesson-main">
+            <button class="back-btn" onclick="showPlanView()">← Back to Outline</button>
+            <div class="lesson-title" id="lessonTitle"></div>
+            <div class="lesson-meta" id="lessonMeta"></div>
+            <div class="lesson-progress-bar"><div class="lesson-progress-fill" id="lessonProgressFill"></div></div>
+            <div class="lesson-content" id="lessonBody"></div>
+          </div>
+
+          <!-- AI INSTRUCTOR -->
+          <div class="ai-instructor">
+            <div class="instructor-header">
+              <div class="instructor-dot"></div>
+              <div class="instructor-title-text">AI Instructor</div>
+            </div>
+            <div class="instructor-messages" id="instructorMessages"></div>
+            <div class="suggested-qs" id="suggestedQs"></div>
+            <div class="instructor-input-area">
+              <textarea class="instructor-input" id="instructorInput"
+                placeholder="Ask about this lesson..."
+                onkeydown="handleInstructorKey(event)"
+                oninput="autoResize(this)" rows="1"></textarea>
+              <button class="send-btn" id="sendBtn" onclick="sendInstructorMessage()">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
-
 </div>
 
 <script>
 const GROQ_API_KEY = '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';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
 const QUESTIONS = [
-  {
-    id: 'goal',
-    number: 'Question 1 of 5',
-    title: 'What is your main learning goal?',
-    type: 'options',
-    options: [
-      { icon: '💼', label: 'Get a Job' },
-      { icon: '📈', label: 'Grow in my current role' },
-      { icon: '🚀', label: 'Build Projects / Side Hustles' },
-      { icon: '🧱', label: 'Strengthen Fundamentals' },
-      { icon: '🔭', label: 'Explore a New Field' },
-    ]
-  },
-  {
-    id: 'field',
-    number: 'Question 2 of 5',
-    title: 'What role or field do you want to focus on?',
-    type: 'textarea',
-    placeholder: 'e.g., "Backend developer with Node.js", "Machine learning engineer", "Frontend with React — I know basic HTML/CSS"...'
-  },
-  {
-    id: 'level',
-    number: 'Question 3 of 5',
-    title: 'What is your current skill level in this area?',
-    type: 'options',
-    options: [
-      { icon: '🌱', label: 'Beginner', desc: 'Just starting out' },
-      { icon: '⚡', label: 'Intermediate', desc: 'Some hands-on experience' },
-      { icon: '🔥', label: 'Advanced', desc: 'Comfortable, want to go deeper' },
-    ]
-  },
-  {
-    id: 'focus',
-    number: 'Question 4 of 5',
-    title: 'Anything specific to focus on — or avoid?',
-    type: 'textarea',
-    placeholder: 'e.g., "Focus on vanilla JS, avoid frameworks", "Include Docker and CI/CD", "Skip math-heavy theory"...'
-  },
-  {
-    id: 'extra',
-    number: 'Question 5 of 5',
-    title: 'Anything else we should know about your goals?',
-    type: 'textarea',
-    placeholder: 'Share your timeline, background, career goals, or anything else that would help personalize your plan...'
-  }
+  { id:'goal', number:'Question 1 of 5', title:'What is your main learning goal?', type:'options',
+    options:[{icon:'💼',label:'Get a Job'},{icon:'📈',label:'Grow in my current role'},{icon:'🚀',label:'Build Projects / Side Hustles'},{icon:'🧱',label:'Strengthen Fundamentals'},{icon:'🔭',label:'Explore a New Field'}]},
+  { id:'field', number:'Question 2 of 5', title:'What role or field do you want to focus on?', type:'textarea',
+    placeholder:'e.g., "Backend developer with Node.js", "Machine learning engineer", "Frontend React developer"...'},
+  { id:'level', number:'Question 3 of 5', title:'What is your current skill level?', type:'options',
+    options:[{icon:'🌱',label:'Beginner',desc:'Just starting out'},{icon:'⚡',label:'Intermediate',desc:'Some hands-on experience'},{icon:'🔥',label:'Advanced',desc:'Comfortable, want to go deeper'}]},
+  { id:'focus', number:'Question 4 of 5', title:'Anything specific to focus on or avoid?', type:'textarea',
+    placeholder:'e.g., "Focus on vanilla JS, avoid frameworks", "Include Docker and CI/CD", "Skip heavy theory"...'},
+  { id:'extra', number:'Question 5 of 5', title:'Anything else about your goals?', type:'textarea',
+    placeholder:'Timeline, background, career goals, preferences...'}
 ];
+const STEP_LABELS = ['Goal','Field','Level','Focus','Context'];
 
-const STEP_LABELS = ['Goal', 'Field', 'Level', 'Focus', 'Context'];
+let current = 0, answers = {}, planData = null;
+let currentCourse = null, instructorHistory = [], loadingInterval;
 
-let current = 0;
-let answers = {};
-let lastPlanText = '';
-
-
+// ── WIZARD ──
 
 function renderProgress() {
   const track = document.getElementById('progressTrack');
   let html = '';
-  QUESTIONS.forEach((q, i) => {
+  QUESTIONS.forEach((q,i) => {
     const state = i < current ? 'done' : i === current ? 'active' : '';
-    const checkmark = i < current ? '✓' : i + 1;
     html += `<div class="prog-step ${state}">
-      <div class="prog-bubble">${checkmark}</div>
+      <div class="prog-bubble">${i < current ? '✓' : i+1}</div>
       <div class="prog-label">${STEP_LABELS[i]}</div>
     </div>`;
-    if (i < QUESTIONS.length - 1) {
-      html += `<div class="prog-line ${i < current ? 'done' : ''}"></div>`;
-    }
+    if (i < QUESTIONS.length-1) html += `<div class="prog-line ${i<current?'done':''}"></div>`;
   });
   track.innerHTML = html;
 }
@@ -745,17 +509,15 @@ function renderQuestion() {
   const q = QUESTIONS[current];
   const card = document.getElementById('questionCard');
   const selected = answers[q.id] || '';
-
-  let inner = `<div class="q-number">${q.number}</div>
-    <div class="q-title">${q.title}</div>`;
+  let inner = `<div class="q-number">${q.number}</div><div class="q-title">${q.title}</div>`;
 
   if (q.type === 'options') {
     inner += `<div class="options-grid">`;
     q.options.forEach(opt => {
       const sel = selected === opt.label ? 'selected' : '';
-      inner += `<button class="opt-btn ${sel}" onclick="selectOption('${q.id}', '${opt.label}', this)">
+      inner += `<button class="opt-btn ${sel}" onclick="selectOption('${q.id}','${opt.label}',this)">
         <span class="opt-icon">${opt.icon}</span>
-        <span>${opt.label}${opt.desc ? `<br/><small style="color:var(--muted);font-weight:400;font-size:11px;">${opt.desc}</small>` : ''}</span>
+        <span>${opt.label}${opt.desc?`<br/><small style="color:var(--muted);font-weight:400;font-size:11px;">${opt.desc}</small>`:''}</span>
       </button>`;
     });
     inner += `</div>`;
@@ -765,41 +527,33 @@ function renderQuestion() {
 
   const isLast = current === QUESTIONS.length - 1;
   inner += `<div class="q-nav">
-    ${current > 0
-      ? `<button class="btn btn-ghost" onclick="goBack()">← Back</button>`
-      : `<span></span>`
-    }
+    ${current > 0 ? `<button class="btn btn-ghost" onclick="goBack()">← Back</button>` : '<span></span>'}
     ${isLast
-      ? `<button class="btn btn-generate" onclick="generatePlan()">🚀 Generate My Learning Path</button>`
-      : `<button class="btn btn-primary" id="nextBtn" onclick="goNext()" ${(q.type === 'options' && !selected) ? 'disabled' : ''}>Continue →</button>`
+      ? `<button class="btn btn-generate" onclick="startGenerate()">🚀 Generate My Learning Plan</button>`
+      : `<button class="btn btn-primary" id="nextBtn" onclick="goNext()" ${q.type==='options'&&!selected?'disabled':''}>Continue →</button>`
     }
   </div>`;
 
   card.innerHTML = inner;
-  card.style.animation = 'none';
-  void card.offsetWidth;
-  card.style.animation = 'fadeUp 0.35s ease';
+  card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'fadeUp 0.35s ease';
 }
 
 function onTextInput(el) {
-  const nextBtn = document.getElementById('nextBtn');
-  if (nextBtn) nextBtn.disabled = el.value.trim().length === 0;
+  const btn = document.getElementById('nextBtn');
+  if (btn) btn.disabled = el.value.trim().length === 0;
 }
 
 function selectOption(qId, value, el) {
   answers[qId] = value;
   document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
-  const nextBtn = document.getElementById('nextBtn');
-  if (nextBtn) nextBtn.disabled = false;
+  const btn = document.getElementById('nextBtn');
+  if (btn) btn.disabled = false;
 }
 
 function goNext() {
   const q = QUESTIONS[current];
-  if (q.type === 'textarea') {
-    const val = document.getElementById('textAnswer').value.trim();
-    answers[q.id] = val || '(not specified)';
-  }
+  if (q.type === 'textarea') answers[q.id] = document.getElementById('textAnswer').value.trim() || '(not specified)';
   if (!answers[q.id]) return;
   current++;
   renderProgress();
@@ -812,219 +566,323 @@ function goBack() {
   renderQuestion();
 }
 
-function buildPrompt(reviseNote = '') {
-  const { goal, field, level, focus, extra } = answers;
-  return `You are an expert AI curriculum designer. Generate a comprehensive, personalized learning plan based on these inputs:
+// ── GROQ ──
 
-Learning Goal: ${goal}
-Field/Role: ${field}
-Skill Level: ${level}
-Focus/Avoid: ${focus}
-Additional Context: ${extra}
-${reviseNote ? `\nRevision Request: ${reviseNote}` : ''}
-
-Generate a detailed learning plan following this EXACT format:
-
-1. Start with a header section:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-YOUR LEARNING PATH: [TITLE IN CAPS]
-[brief 1-sentence tagline]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Estimated Duration: X months | X steps | X courses
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-2. Then for each step (create 5-7 steps):
-▶ STEP X: [STEP TITLE]
-[1-line description of what this step covers]
-
-Courses in this step:
-  1. [Course Name]
-  2. [Course Name]
-  3. [Course Name]
-
-For the FIRST course in Step 1, include a full text mindmap like:
-  Mindmap: [Course Name]
-  |
-  |--- [Module 1 Name]
-  |     |
-  |     |--- [Topic 1]
-  |     |--- [Topic 2]
-  |     |--- [Topic 3]
-  |     |--- [Practical: relevant exercise]
-  |
-  |--- [Module 2 Name]
-  |     |
-  |     |--- [Topic 1]
-  |     |--- [Topic 2]
-  |     |--- [Practical: relevant exercise]
-  |
-  (3-4 modules with 3-5 topics each)
-
-3. End with:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-LEARNING PATH SUMMARY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[2-3 sentence summary tying the plan to their specific goal]
-
-Next Steps:
-→ Start with Step 1 immediately
-→ Dedicate [X hours/week] per week
-→ Build a portfolio project after Step [X]
-
-Be specific, practical, and tailored to the user's exact inputs. Use real technology names, real course topics. Make it feel professional and achievable.`;
-}
-
-const LOADING_MESSAGES = [
-  'Analyzing your goals',
-  'Designing your learning path',
-  'Selecting optimal courses',
-  'Building your mindmap',
-  'Finalizing your roadmap'
-];
-
-let loadingInterval;
-
-function startLoadingAnimation() {
-  let i = 0;
-  const el = document.getElementById('loadingStatus');
-  el.textContent = LOADING_MESSAGES[0];
-  loadingInterval = setInterval(() => {
-    i = (i + 1) % LOADING_MESSAGES.length;
-    el.textContent = LOADING_MESSAGES[i];
-  }, 1800);
-}
-
-function stopLoadingAnimation() {
-  clearInterval(loadingInterval);
-}
-
-async function generatePlan(reviseNote = '') {
-  const q = QUESTIONS[current];
-  if (q && q.type === 'textarea') {
-    const val = document.getElementById('textAnswer')?.value.trim();
-    answers[q.id] = val || '(not specified)';
+async function callGroq(messages, maxTokens = 3000) {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: GROQ_MODEL, messages, max_tokens: maxTokens, temperature: 0.7, stream: false })
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(e.error?.message || `API Error ${res.status}`);
   }
+  return (await res.json()).choices?.[0]?.message?.content || '';
+}
 
-  const apiKey = GROQ_API_KEY;
+// ── GENERATION ──
 
-  // Show loading
-  document.getElementById('wizard').classList.add('hidden');
-  document.getElementById('resultView').classList.add('hidden');
-  document.getElementById('loadingScreen').classList.remove('hidden');
-  startLoadingAnimation();
+const LOADING_MSGS = ['Analyzing your goals','Designing your learning path','Selecting optimal courses','Organizing your roadmap','Finalizing your plan'];
 
-  const prompt = buildPrompt(reviseNote);
+async function startGenerate(reviseNote = '') {
+  const q = QUESTIONS[current];
+  if (q && q.type === 'textarea') answers[q.id] = document.getElementById('textAnswer')?.value.trim() || '(not specified)';
+
+  document.getElementById('wizardPage').style.display = 'none';
+  document.getElementById('appPage').style.display = 'none';
+  const lp = document.getElementById('loadingPage');
+  lp.style.display = 'grid';
+
+  let i = 0;
+  const lsEl = document.getElementById('loadingStatus');
+  lsEl.textContent = LOADING_MSGS[0];
+  loadingInterval = setInterval(() => { lsEl.textContent = LOADING_MSGS[++i % LOADING_MSGS.length]; }, 1800);
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 4096,
-        temperature: 0.7,
-        stream: false,
-      })
-    });
+    const { goal, field, level, focus, extra } = answers;
+    const prompt = `You are an expert curriculum designer. Create a structured learning plan as JSON only.
 
-    if (!response.ok) {
-      let errMsg = `API Error ${response.status}`;
-      try {
-        const err = await response.json();
-        errMsg = err.error?.message || errMsg;
-      } catch {}
-      throw new Error(errMsg);
+User inputs:
+- Goal: ${goal}
+- Field/Role: ${field}
+- Level: ${level}
+- Focus/Avoid: ${focus}
+- Extra context: ${extra}
+${reviseNote ? `- Revision request: ${reviseNote}` : ''}
+
+Return ONLY valid JSON (no markdown fences, no explanation):
+{
+  "title": "Short descriptive plan title",
+  "tagline": "One sentence tagline",
+  "duration": "X months",
+  "steps": [
+    {
+      "id": 1,
+      "title": "Step Title",
+      "description": "One sentence description",
+      "courses": ["Course Name 1","Course Name 2","Course Name 3","Course Name 4","Course Name 5"]
+    }
+  ]
+}
+
+Create 5-7 steps with 4-6 courses each. Use specific real technology/concept names.`;
+
+    const raw = await callGroq([{ role: 'user', content: prompt }], 3000);
+    clearInterval(loadingInterval);
+
+    let parsed;
+    try {
+      const clean = raw.replace(/```json|```/g, '').trim();
+      parsed = JSON.parse(clean);
+    } catch {
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('Could not parse plan. Please try again.');
+      parsed = JSON.parse(match[0]);
     }
 
-    const data = await response.json();
-    const text = data.choices?.[0]?.message?.content || '';
-
-    stopLoadingAnimation();
-    document.getElementById('loadingScreen').classList.add('hidden');
-    document.getElementById('resultView').classList.remove('hidden');
-
-    document.getElementById('planTitle').textContent =
-      `${answers.field?.split(' ').slice(0,4).join(' ')} Path`;
-    document.getElementById('planMeta').textContent =
-      `${answers.goal} · ${answers.level} level`;
-
-    const output = document.getElementById('planOutput');
-    lastPlanText = text;
-
-    // Typewriter effect
-    output.textContent = '';
-    const cursor = document.createElement('span');
-    cursor.className = 'streaming-cursor';
-    output.appendChild(cursor);
-
-    let i = 0;
-    const chunkSize = 8;
-    function typeChunk() {
-      if (i < text.length) {
-        output.textContent = text.slice(0, i + chunkSize);
-        output.appendChild(cursor);
-        output.scrollTop = output.scrollHeight;
-        i += chunkSize;
-        requestAnimationFrame(typeChunk);
-      } else {
-        output.textContent = text;
-        cursor.remove();
-      }
-    }
-    typeChunk();
+    planData = parsed;
+    lp.style.display = 'none';
+    document.getElementById('appPage').style.display = 'block';
+    renderSidebar('plan');
+    renderPlanView();
+    document.getElementById('planView').style.display = 'block';
+    document.getElementById('lessonView').style.display = 'none';
 
   } catch (err) {
-    stopLoadingAnimation();
-    document.getElementById('loadingScreen').classList.add('hidden');
-    document.getElementById('resultView').classList.remove('hidden');
-    const errBox = document.getElementById('errorBox');
-    errBox.textContent = `Error: ${err.message}. If opening as a local file, try serving it via a local server (e.g. VS Code Live Server).`;
-    errBox.style.display = 'block';
+    clearInterval(loadingInterval);
+    lp.innerHTML = `<div style="text-align:center;padding:20px;">
+      <p style="color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:20px;">Error: ${err.message}</p>
+      <button class="btn btn-ghost" onclick="location.reload()">← Start Over</button>
+    </div>`;
   }
 }
 
-async function regeneratePlan() {
-  document.getElementById('errorBox').style.display = 'none';
-  await generatePlan('Please regenerate with a different structure, different course names, and slightly different approach while keeping the same goals.');
+// ── RENDER ──
+
+function renderSidebar(mode) {
+  const el = document.getElementById('sidebarContent');
+  if (mode === 'plan') {
+    let html = `<div style="padding:8px 12px 4px;"><div class="sidebar-section-label">Steps</div></div><div class="plan-step-list">`;
+    planData.steps.forEach((step,i) => {
+      html += `<div class="step-nav-item" id="sn${i}" onclick="scrollToStep(${i})">
+        <div class="step-nav-num">${i+1}</div>
+        <div><div class="step-nav-title">${step.title}</div><div class="step-nav-count">${step.courses.length} courses</div></div>
+      </div>`;
+    });
+    html += `</div>`;
+    el.innerHTML = html;
+  } else {
+    // Lesson outline
+    let html = '';
+    planData.steps.forEach((step,si) => {
+      html += `<div class="outline-step-header"><span class="outline-step-badge">STEP ${si+1}</span><span class="outline-step-name">${step.title}</span></div>`;
+      step.courses.forEach((course,ci) => {
+        const active = currentCourse && currentCourse.si===si && currentCourse.ci===ci ? 'active' : '';
+        html += `<div class="outline-course-item ${active}" onclick="openCourse(${si},${ci})">
+          <div class="outline-num">${ci+1}</div><span>${course}</span>
+        </div>`;
+      });
+    });
+    el.innerHTML = html;
+  }
 }
 
-function openRevise() {
-  document.getElementById('reviseModal').classList.add('open');
-  document.getElementById('reviseInput').focus();
+function renderPlanView() {
+  document.getElementById('planTitle').textContent = planData.title;
+  const total = planData.steps.reduce((a,s) => a+s.courses.length, 0);
+  document.getElementById('planMeta').textContent = `${planData.steps.length} steps, ${total} courses`;
+
+  let html = '';
+  planData.steps.forEach((step,si) => {
+    html += `<div class="step-block" id="sb${si}">
+      <div class="step-header">
+        <div class="step-badge-row">
+          <div class="step-badge">STEP ${si+1}</div>
+          <div class="step-title-text">${step.title}</div>
+        </div>
+        <div class="step-course-count">${step.courses.length} courses</div>
+      </div>
+      ${step.description ? `<p style="font-size:13px;color:var(--muted);margin:-4px 0 14px;">${step.description}</p>` : ''}
+      <div class="course-list">`;
+    step.courses.forEach((course,ci) => {
+      html += `<div class="course-row" onclick="openCourse(${si},${ci})">
+        <div class="course-num">${ci+1}</div>
+        <div class="course-name">${course}</div>
+        <div class="course-arrow">↗</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  document.getElementById('stepsContainer').innerHTML = html;
 }
 
-function closeRevise() {
-  document.getElementById('reviseModal').classList.remove('open');
+function showPlanView() {
+  document.getElementById('planView').style.display = 'block';
+  document.getElementById('lessonView').style.display = 'none';
+  document.getElementById('navPlan').classList.add('active');
+  renderSidebar('plan');
 }
 
+function scrollToStep(i) {
+  document.getElementById(`sb${i}`)?.scrollIntoView({ behavior:'smooth', block:'start' });
+  document.querySelectorAll('.step-nav-item').forEach(e => e.classList.remove('active'));
+  document.getElementById(`sn${i}`)?.classList.add('active');
+}
+
+// ── LESSON ──
+
+async function openCourse(si, ci) {
+  const step = planData.steps[si];
+  const courseName = step.courses[ci];
+  currentCourse = { si, ci, name: courseName, stepTitle: step.title, stepNum: si+1 };
+  instructorHistory = [];
+
+  document.getElementById('planView').style.display = 'none';
+  document.getElementById('lessonView').style.display = 'block';
+  document.getElementById('navPlan').classList.remove('active');
+  renderSidebar('lesson');
+
+  document.getElementById('lessonTitle').textContent = courseName;
+  document.getElementById('lessonMeta').textContent = `Step ${si+1}: ${step.title}`;
+  document.getElementById('lessonProgressFill').style.width = '0%';
+  document.getElementById('lessonBody').innerHTML = `<div class="lesson-loading"><div class="lesson-spinner"></div>Generating lesson content<span class="loading-dots"></span></div>`;
+  document.getElementById('instructorMessages').innerHTML = '';
+  document.getElementById('suggestedQs').innerHTML = '';
+
+  try {
+    const content = await generateLesson(courseName, step.title, si+1);
+    document.getElementById('lessonBody').innerHTML = content;
+    document.getElementById('lessonProgressFill').style.width = '25%';
+    await initInstructor(courseName, step.title);
+  } catch(err) {
+    document.getElementById('lessonBody').innerHTML = `<p style="color:var(--danger)">Error: ${err.message}</p>`;
+  }
+}
+
+async function generateLesson(courseName, stepTitle, stepNum) {
+  const prompt = `Write lesson content for: "${courseName}" (Step ${stepNum}: ${stepTitle})
+Learner: ${answers.field}, level: ${answers.level}
+
+Return clean HTML content elements only (no DOCTYPE, no html/body tags).
+Structure:
+- 2-3 intro paragraphs
+- 3-4 sections with <h2> headings
+- Each section: 2-3 paragraphs
+- 1-2 code examples in <pre><code> where relevant  
+- End with <h2>Key Takeaways</h2> and a <ul>
+
+Use <h2>, <h3>, <p>, <ul>, <li>, <pre><code>, <strong>, <code> tags only. Be practical and specific.`;
+
+  return callGroq([{role:'user',content:prompt}], 2000);
+}
+
+async function initInstructor(courseName, stepTitle) {
+  addMsg('ai', `Hello! I'm your AI Instructor for <strong>${courseName}</strong>. Ask me anything about this lesson — concepts, examples, or how to apply this in practice.`);
+
+  try {
+    const sqRaw = await callGroq([{role:'user',content:`Generate 4 short questions a learner might ask about "${courseName}". Return JSON array only: ["Q1","Q2","Q3","Q4"]`}], 300);
+    const match = sqRaw.match(/\[[\s\S]*?\]/);
+    const qs = match ? JSON.parse(match[0]) : [];
+    renderSuggestedQs(qs.length ? qs : defaultQs(courseName));
+  } catch {
+    renderSuggestedQs(defaultQs(courseName));
+  }
+}
+
+function defaultQs(name) {
+  return [`What are the key concepts in ${name}?`,'Can you give a practical example?','What are common mistakes to avoid?','How does this apply in real projects?'];
+}
+
+function renderSuggestedQs(qs) {
+  const el = document.getElementById('suggestedQs');
+  let html = `<div class="suggested-label">Suggested questions</div>`;
+  qs.forEach(q => {
+    html += `<button class="sugg-q" onclick="askSuggested(this,'${q.replace(/'/g,"\\'").replace(/"/g,'\\"')}')">${q}</button>`;
+  });
+  el.innerHTML = html;
+}
+
+function askSuggested(btn, q) {
+  btn.disabled = true; btn.style.opacity = '0.4';
+  document.getElementById('instructorInput').value = q;
+  sendInstructorMessage();
+}
+
+function addMsg(role, html) {
+  const msgs = document.getElementById('instructorMessages');
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  div.innerHTML = `<div class="msg-avatar">${role==='ai'?'🤖':'👤'}</div><div class="msg-bubble">${html}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('instructorMessages');
+  const div = document.createElement('div');
+  div.id = 'typing'; div.className = 'msg msg-ai typing-indicator';
+  div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() { document.getElementById('typing')?.remove(); }
+
+async function sendInstructorMessage() {
+  const input = document.getElementById('instructorInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; autoResize(input);
+  document.getElementById('sendBtn').disabled = true;
+  addMsg('user', text);
+  addTyping();
+  instructorHistory.push({role:'user',content:text});
+
+  try {
+    const reply = await callGroq([
+      {role:'system',content:`You are an AI Instructor for "${currentCourse?.name}". Learner: ${answers.field}, level: ${answers.level}. Be helpful, concise (under 120 words unless example needed). Use **bold** for key terms.`},
+      ...instructorHistory
+    ], 500);
+    removeTyping();
+    instructorHistory.push({role:'assistant',content:reply});
+    addMsg('ai', reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>'));
+  } catch(err) {
+    removeTyping();
+    addMsg('ai', `Sorry, error: ${err.message}`);
+  }
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function handleInstructorKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendInstructorMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+}
+
+// ── REVISE ──
+
+function openRevise() { document.getElementById('reviseModal').classList.add('open'); document.getElementById('reviseInput').focus(); }
+function closeRevise() { document.getElementById('reviseModal').classList.remove('open'); }
 async function applyRevise() {
   const note = document.getElementById('reviseInput').value.trim();
   if (!note) return;
-  closeRevise();
   document.getElementById('reviseInput').value = '';
-  await generatePlan(note);
+  closeRevise();
+  await startGenerate(note);
 }
+document.getElementById('reviseModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeRevise(); });
 
 function startOver() {
-  current = 0;
-  answers = {};
-  lastPlanText = '';
-  document.getElementById('resultView').classList.add('hidden');
-  document.getElementById('errorBox').style.display = 'none';
-  document.getElementById('wizard').classList.remove('hidden');
-  renderProgress();
-  renderQuestion();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  current = 0; answers = {}; planData = null; currentCourse = null; instructorHistory = [];
+  document.getElementById('appPage').style.display = 'none';
+  document.getElementById('loadingPage').style.display = 'none';
+  document.getElementById('wizardPage').style.display = 'flex';
+  window.scrollTo({top:0});
+  renderProgress(); renderQuestion();
 }
-
-// Close modal on overlay click
-document.getElementById('reviseModal').addEventListener('click', function(e) {
-  if (e.target === this) closeRevise();
-});
 
 // Init
 renderProgress();
