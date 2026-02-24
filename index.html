@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Learning Path Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #252530;
+    --accent: #7c6af7;
+    --accent2: #4ecdaa;
+    --accent-glow: rgba(124, 106, 247, 0.25);
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --danger: #f76a6a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,106,247,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,106,247,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Orb */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(124,106,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* HEADER */
+  header {
+    padding: 40px 0 32px;
+    text-align: center;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 400;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* API KEY BAR */
+
+
+  /* STEPS WIZARD */
+  .wizard {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Progress bar */
+  .progress-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 36px;
+  }
+
+  .prog-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .prog-bubble {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.3s;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+  }
+
+  .prog-step.active .prog-bubble {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 16px var(--accent-glow);
+  }
+
+  .prog-step.done .prog-bubble {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #000;
+  }
+
+  .prog-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    max-width: 70px;
+    line-height: 1.3;
+  }
+
+  .prog-step.active .prog-label { color: var(--accent); }
+  .prog-step.done .prog-label { color: var(--accent2); }
+
+  .prog-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    margin-top: -20px;
+    align-self: flex-start;
+    transition: background 0.3s;
+  }
+
+  .prog-line.done { background: var(--accent2); }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  .q-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.3;
+  }
+
+  /* Option buttons */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .opt-btn {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .opt-btn:hover {
+    border-color: var(--accent);
+    background: rgba(124,106,247,0.1);
+    color: #fff;
+  }
+
+  .opt-btn.selected {
+    border-color: var(--accent);
+    background: rgba(124,106,247,0.15);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  .opt-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Textarea */
+  .q-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 24px;
+  }
+
+  .q-textarea:focus { border-color: var(--accent); }
+  .q-textarea::placeholder { color: var(--muted); }
+
+  /* Nav buttons */
+  .q-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(124,106,247,0.35);
+  }
+
+  .btn-primary:hover { background: #9180ff; box-shadow: 0 4px 28px rgba(124,106,247,0.5); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-generate {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 15px;
+    padding: 14px 32px;
+    box-shadow: 0 4px 28px rgba(124,106,247,0.4);
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 6px 36px rgba(124,106,247,0.55); }
+
+  /* SUMMARY BEFORE GENERATE */
+  .summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .summary-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    min-width: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    padding-top: 1px;
+  }
+
+  .summary-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  /* LOADING */
+  .loading-screen {
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .loader-ring {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-right-color: var(--accent2);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 24px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .loading-sub {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  .loading-dots::after {
+    content: '';
+    animation: dots 1.4s infinite;
+  }
+
+  @keyframes dots {
+    0%   { content: ''; }
+    33%  { content: '.'; }
+    66%  { content: '..'; }
+    100% { content: '...'; }
+  }
+
+  /* RESULT */
+  .result-header {
+    text-align: center;
+    padding: 40px 0 32px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .result-badge {
+    display: inline-block;
+    background: rgba(78, 205, 170, 0.1);
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    border-radius: 100px;
+    padding: 5px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .result-title {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 800;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .result-meta {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* PLAN OUTPUT */
+  .plan-output {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .plan-output pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    padding: 28px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+
+  /* Custom scrollbar */
+  .plan-output pre::-webkit-scrollbar { width: 6px; }
+  .plan-output pre::-webkit-scrollbar-track { background: var(--surface2); }
+  .plan-output pre::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* Syntax highlighting in plan */
+  .plan-output pre .step-title { color: var(--accent); font-weight: 700; }
+  .plan-output pre .course-item { color: var(--accent2); }
+  .plan-output pre .tree-line { color: var(--muted); }
+  .plan-output pre .section-header { color: #fff; font-weight: 700; }
+
+  /* Streaming cursor */
+  .streaming-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--accent);
+    animation: blink 0.7s step-end infinite;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* Action buttons */
+  .action-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .btn-action {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-regen {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-regen:hover { background: rgba(124,106,247,0.1); }
+
+  .btn-revise {
+    background: transparent;
+    border: 1.5px solid var(--accent2);
+    color: var(--accent2);
+  }
+
+  .btn-revise:hover { background: rgba(78,205,170,0.1); }
+
+  .btn-new {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-new:hover { border-color: var(--muted); color: var(--text); }
+
+  /* ERROR */
+  .error-box {
+    background: rgba(247, 106, 106, 0.08);
+    border: 1px solid rgba(247,106,106,0.3);
+    border-radius: 10px;
+    padding: 16px 20px;
+    color: var(--danger);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    margin-top: 16px;
+    display: none;
+  }
+
+  /* REVISE MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    place-items: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: grid; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .modal h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+  .modal p { color: var(--muted); font-size: 14px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- REVISE MODAL -->
+<div class="modal-overlay" id="reviseModal">
+  <div class="modal">
+    <h3>✏️ Revise Your Plan</h3>
+    <p>Tell the AI what you'd like to change about the learning plan:</p>
+    <textarea class="q-textarea" id="reviseInput" placeholder="e.g., Make it more beginner-friendly, focus more on backend, skip frameworks, add more practical projects..." style="min-height:120px;"></textarea>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" onclick="closeRevise()">Cancel</button>
+      <button class="btn btn-primary" onclick="applyRevise()">Apply Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🗺️</div>
+      <span class="logo-text">Roadmap AI</span>
+    </div>
+    <h1>AI Learning Path<br/>Generator</h1>
+    <p class="subtitle">Answer 5 questions → get a personalized roadmap</p>
+  </header>
+
+
+
+  <!-- WIZARD -->
+  <div class="wizard" id="wizard">
+
+    <!-- Progress -->
+    <div class="progress-track" id="progressTrack">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Question Card -->
+    <div class="q-card" id="questionCard">
+      <!-- Filled by JS -->
+    </div>
+
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-screen hidden" id="loadingScreen">
+    <div class="loader-ring"></div>
+    <div class="loading-title">Crafting your roadmap<span class="loading-dots"></span></div>
+    <div class="loading-sub" id="loadingStatus">Analyzing your goals</div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="hidden" id="resultView">
+    <div class="result-header">
+      <div class="result-badge">✓ Plan Ready</div>
+      <div class="result-title" id="planTitle">Your Learning Path</div>
+      <div class="result-meta" id="planMeta"></div>
+    </div>
+    <div class="plan-output">
+      <pre id="planOutput"></pre>
+    </div>
+    <div class="error-box" id="errorBox"></div>
+    <div class="action-bar">
+      <button class="btn-action btn-regen" onclick="regeneratePlan()">⟳ Regenerate Plan</button>
+      <button class="btn-action btn-revise" onclick="openRevise()">✏️ Revise Plan</button>
+      <button class="btn-action btn-new" onclick="startOver()">+ New Plan</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const GROQ_API_KEY = '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';
+
+const QUESTIONS = [
+  {
+    id: 'goal',
+    number: 'Question 1 of 5',
+    title: 'What is your main learning goal?',
+    type: 'options',
+    options: [
+      { icon: '💼', label: 'Get a Job' },
+      { icon: '📈', label: 'Grow in my current role' },
+      { icon: '🚀', label: 'Build Projects / Side Hustles' },
+      { icon: '🧱', label: 'Strengthen Fundamentals' },
+      { icon: '🔭', label: 'Explore a New Field' },
+    ]
+  },
+  {
+    id: 'field',
+    number: 'Question 2 of 5',
+    title: 'What role or field do you want to focus on?',
+    type: 'textarea',
+    placeholder: 'e.g., "Backend developer with Node.js", "Machine learning engineer", "Frontend with React — I know basic HTML/CSS"...'
+  },
+  {
+    id: 'level',
+    number: 'Question 3 of 5',
+    title: 'What is your current skill level in this area?',
+    type: 'options',
+    options: [
+      { icon: '🌱', label: 'Beginner', desc: 'Just starting out' },
+      { icon: '⚡', label: 'Intermediate', desc: 'Some hands-on experience' },
+      { icon: '🔥', label: 'Advanced', desc: 'Comfortable, want to go deeper' },
+    ]
+  },
+  {
+    id: 'focus',
+    number: 'Question 4 of 5',
+    title: 'Anything specific to focus on — or avoid?',
+    type: 'textarea',
+    placeholder: 'e.g., "Focus on vanilla JS, avoid frameworks", "Include Docker and CI/CD", "Skip math-heavy theory"...'
+  },
+  {
+    id: 'extra',
+    number: 'Question 5 of 5',
+    title: 'Anything else we should know about your goals?',
+    type: 'textarea',
+    placeholder: 'Share your timeline, background, career goals, or anything else that would help personalize your plan...'
+  }
+];
+
+const STEP_LABELS = ['Goal', 'Field', 'Level', 'Focus', 'Context'];
+
+let current = 0;
+let answers = {};
+let lastPlanText = '';
+
+
+
+function renderProgress() {
+  const track = document.getElementById('progressTrack');
+  let html = '';
+  QUESTIONS.forEach((q, i) => {
+    const state = i < current ? 'done' : i === current ? 'active' : '';
+    const checkmark = i < current ? '✓' : i + 1;
+    html += `<div class="prog-step ${state}">
+      <div class="prog-bubble">${checkmark}</div>
+      <div class="prog-label">${STEP_LABELS[i]}</div>
+    </div>`;
+    if (i < QUESTIONS.length - 1) {
+      html += `<div class="prog-line ${i < current ? 'done' : ''}"></div>`;
+    }
+  });
+  track.innerHTML = html;
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const card = document.getElementById('questionCard');
+  const selected = answers[q.id] || '';
+
+  let inner = `<div class="q-number">${q.number}</div>
+    <div class="q-title">${q.title}</div>`;
+
+  if (q.type === 'options') {
+    inner += `<div class="options-grid">`;
+    q.options.forEach(opt => {
+      const sel = selected === opt.label ? 'selected' : '';
+      inner += `<button class="opt-btn ${sel}" onclick="selectOption('${q.id}', '${opt.label}', this)">
+        <span class="opt-icon">${opt.icon}</span>
+        <span>${opt.label}${opt.desc ? `<br/><small style="color:var(--muted);font-weight:400;font-size:11px;">${opt.desc}</small>` : ''}</span>
+      </button>`;
+    });
+    inner += `</div>`;
+  } else {
+    inner += `<textarea class="q-textarea" id="textAnswer" placeholder="${q.placeholder}" oninput="onTextInput(this)">${selected}</textarea>`;
+  }
+
+  const isLast = current === QUESTIONS.length - 1;
+  inner += `<div class="q-nav">
+    ${current > 0
+      ? `<button class="btn btn-ghost" onclick="goBack()">← Back</button>`
+      : `<span></span>`
+    }
+    ${isLast
+      ? `<button class="btn btn-generate" onclick="generatePlan()">🚀 Generate My Learning Path</button>`
+      : `<button class="btn btn-primary" id="nextBtn" onclick="goNext()" ${(q.type === 'options' && !selected) ? 'disabled' : ''}>Continue →</button>`
+    }
+  </div>`;
+
+  card.innerHTML = inner;
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = 'fadeUp 0.35s ease';
+}
+
+function onTextInput(el) {
+  const nextBtn = document.getElementById('nextBtn');
+  if (nextBtn) nextBtn.disabled = el.value.trim().length === 0;
+}
+
+function selectOption(qId, value, el) {
+  answers[qId] = value;
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  const nextBtn = document.getElementById('nextBtn');
+  if (nextBtn) nextBtn.disabled = false;
+}
+
+function goNext() {
+  const q = QUESTIONS[current];
+  if (q.type === 'textarea') {
+    const val = document.getElementById('textAnswer').value.trim();
+    answers[q.id] = val || '(not specified)';
+  }
+  if (!answers[q.id]) return;
+  current++;
+  renderProgress();
+  renderQuestion();
+}
+
+function goBack() {
+  current--;
+  renderProgress();
+  renderQuestion();
+}
+
+function buildPrompt(reviseNote = '') {
+  const { goal, field, level, focus, extra } = answers;
+  return `You are an expert AI curriculum designer. Generate a comprehensive, personalized learning plan based on these inputs:
+
+Learning Goal: ${goal}
+Field/Role: ${field}
+Skill Level: ${level}
+Focus/Avoid: ${focus}
+Additional Context: ${extra}
+${reviseNote ? `\nRevision Request: ${reviseNote}` : ''}
+
+Generate a detailed learning plan following this EXACT format:
+
+1. Start with a header section:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR LEARNING PATH: [TITLE IN CAPS]
+[brief 1-sentence tagline]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Estimated Duration: X months | X steps | X courses
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. Then for each step (create 5-7 steps):
+▶ STEP X: [STEP TITLE]
+[1-line description of what this step covers]
+
+Courses in this step:
+  1. [Course Name]
+  2. [Course Name]
+  3. [Course Name]
+
+For the FIRST course in Step 1, include a full text mindmap like:
+  Mindmap: [Course Name]
+  |
+  |--- [Module 1 Name]
+  |     |
+  |     |--- [Topic 1]
+  |     |--- [Topic 2]
+  |     |--- [Topic 3]
+  |     |--- [Practical: relevant exercise]
+  |
+  |--- [Module 2 Name]
+  |     |
+  |     |--- [Topic 1]
+  |     |--- [Topic 2]
+  |     |--- [Practical: relevant exercise]
+  |
+  (3-4 modules with 3-5 topics each)
+
+3. End with:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LEARNING PATH SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[2-3 sentence summary tying the plan to their specific goal]
+
+Next Steps:
+→ Start with Step 1 immediately
+→ Dedicate [X hours/week] per week
+→ Build a portfolio project after Step [X]
+
+Be specific, practical, and tailored to the user's exact inputs. Use real technology names, real course topics. Make it feel professional and achievable.`;
+}
+
+const LOADING_MESSAGES = [
+  'Analyzing your goals',
+  'Designing your learning path',
+  'Selecting optimal courses',
+  'Building your mindmap',
+  'Finalizing your roadmap'
+];
+
+let loadingInterval;
+
+function startLoadingAnimation() {
+  let i = 0;
+  const el = document.getElementById('loadingStatus');
+  el.textContent = LOADING_MESSAGES[0];
+  loadingInterval = setInterval(() => {
+    i = (i + 1) % LOADING_MESSAGES.length;
+    el.textContent = LOADING_MESSAGES[i];
+  }, 1800);
+}
+
+function stopLoadingAnimation() {
+  clearInterval(loadingInterval);
+}
+
+async function generatePlan(reviseNote = '') {
+  const q = QUESTIONS[current];
+  if (q && q.type === 'textarea') {
+    const val = document.getElementById('textAnswer')?.value.trim();
+    answers[q.id] = val || '(not specified)';
+  }
+
+  const apiKey = GROQ_API_KEY;
+
+  // Show loading
+  document.getElementById('wizard').classList.add('hidden');
+  document.getElementById('resultView').classList.add('hidden');
+  document.getElementById('loadingScreen').classList.remove('hidden');
+  startLoadingAnimation();
+
+  const prompt = buildPrompt(reviseNote);
+
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 4096,
+        temperature: 0.7,
+        stream: false,
+      })
+    });
+
+    if (!response.ok) {
+      let errMsg = `API Error ${response.status}`;
+      try {
+        const err = await response.json();
+        errMsg = err.error?.message || errMsg;
+      } catch {}
+      throw new Error(errMsg);
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content || '';
+
+    stopLoadingAnimation();
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('resultView').classList.remove('hidden');
+
+    document.getElementById('planTitle').textContent =
+      `${answers.field?.split(' ').slice(0,4).join(' ')} Path`;
+    document.getElementById('planMeta').textContent =
+      `${answers.goal} · ${answers.level} level`;
+
+    const output = document.getElementById('planOutput');
+    lastPlanText = text;
+
+    // Typewriter effect
+    output.textContent = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'streaming-cursor';
+    output.appendChild(cursor);
+
+    let i = 0;
+    const chunkSize = 8;
+    function typeChunk() {
+      if (i < text.length) {
+        output.textContent = text.slice(0, i + chunkSize);
+        output.appendChild(cursor);
+        output.scrollTop = output.scrollHeight;
+        i += chunkSize;
+        requestAnimationFrame(typeChunk);
+      } else {
+        output.textContent = text;
+        cursor.remove();
+      }
+    }
+    typeChunk();
+
+  } catch (err) {
+    stopLoadingAnimation();
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('resultView').classList.remove('hidden');
+    const errBox = document.getElementById('errorBox');
+    errBox.textContent = `Error: ${err.message}. If opening as a local file, try serving it via a local server (e.g. VS Code Live Server).`;
+    errBox.style.display = 'block';
+  }
+}
+
+async function regeneratePlan() {
+  document.getElementById('errorBox').style.display = 'none';
+  await generatePlan('Please regenerate with a different structure, different course names, and slightly different approach while keeping the same goals.');
+}
+
+function openRevise() {
+  document.getElementById('reviseModal').classList.add('open');
+  document.getElementById('reviseInput').focus();
+}
+
+function closeRevise() {
+  document.getElementById('reviseModal').classList.remove('open');
+}
+
+async function applyRevise() {
+  const note = document.getElementById('reviseInput').value.trim();
+  if (!note) return;
+  closeRevise();
+  document.getElementById('reviseInput').value = '';
+  await generatePlan(note);
+}
+
+function startOver() {
+  current = 0;
+  answers = {};
+  lastPlanText = '';
+  document.getElementById('resultView').classList.add('hidden');
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('wizard').classList.remove('hidden');
+  renderProgress();
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Close modal on overlay click
+document.getElementById('reviseModal').addEventListener('click', function(e) {
+  if (e.target === this) closeRevise();
+});
+
+// Init
+renderProgress();
+renderQuestion();
+</script>
+</body>
+</html>
