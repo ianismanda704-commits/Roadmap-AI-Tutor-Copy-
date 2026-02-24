@@ -471,6 +471,165 @@ h1 {
 }
 .cca-topic-input:focus { border-color: var(--accent); }
 .cca-topic-input::placeholder { color: var(--muted); }
+
+/* ── GUIDE CREATOR ── */
+#guideCreatorWizard { display: none; animation: fadeUp 0.35s ease; }
+
+.personalization-group { margin-bottom: 22px; }
+.personalization-group .course-creator-label { margin-bottom: 10px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 7px 14px; border-radius: 100px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  color: var(--muted); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.18s;
+  font-family: 'Inter', sans-serif;
+}
+.chip:hover { border-color: var(--accent); color: var(--text); }
+.chip.selected { background: rgba(124,106,247,0.15); border-color: var(--accent); color: #fff; box-shadow: inset 0 0 0 1px var(--accent); }
+.chip-custom {
+  padding: 6px 14px; border-radius: 100px;
+  background: transparent; border: 1.5px dashed var(--muted2);
+  color: var(--muted); font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  outline: none; transition: all 0.18s;
+  width: 130px; cursor: text;
+}
+.chip-custom:focus { border-color: var(--accent); color: var(--text); }
+.chip-custom::placeholder { color: var(--muted2); }
+
+.skip-link {
+  font-size: 12px; color: var(--muted); cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  background: none; border: none; text-decoration: underline;
+  text-underline-offset: 3px; padding: 0;
+}
+.skip-link:hover { color: var(--text); }
+
+/* ── GUIDE VIEW ── */
+#guideView { display: none; }
+.guide-layout {
+  display: flex; min-height: 100vh;
+}
+.guide-main {
+  flex: 1; min-width: 0;
+  padding: 36px 44px 80px;
+  max-width: 720px; overflow-y: auto;
+}
+.guide-header { margin-bottom: 32px; }
+.guide-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--accent); margin-bottom: 8px;
+}
+.guide-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 800; line-height: 1.15; margin-bottom: 8px;
+}
+.guide-prefs {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+}
+.guide-pref-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 100px; padding: 4px 10px;
+  font-size: 11px; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+.guide-divider { height: 1px; background: var(--border); margin: 28px 0; }
+.guide-section-block { margin-bottom: 36px; scroll-margin-top: 20px; }
+.guide-section-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); margin-bottom: 12px;
+}
+.guide-section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.15rem; font-weight: 700;
+  margin-bottom: 14px; color: #fff;
+}
+.guide-content { line-height: 1.75; font-size: 15px; }
+.guide-content p { margin-bottom: 14px; color: #c4c4d8; }
+.guide-content h3 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin: 18px 0 8px; color: var(--text); }
+.guide-content ul, .guide-content ol { margin: 0 0 14px 20px; }
+.guide-content li { margin-bottom: 5px; color: #c4c4d8; }
+.guide-content code { background: var(--surface2); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent2); }
+.guide-content pre { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; overflow-x: auto; margin-bottom: 14px; }
+.guide-content pre code { background: none; border: none; padding: 0; font-size: 12px; color: var(--text); }
+.guide-content strong { color: #fff; font-weight: 600; }
+
+/* Section loading */
+.section-loading {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; padding: 12px 0;
+}
+.section-spinner {
+  width: 14px; height: 14px; border: 2px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.6s linear infinite; flex-shrink: 0;
+}
+
+/* Feedback row */
+.guide-feedback {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 22px;
+  margin-top: 36px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.guide-feedback-q { font-size: 14px; font-weight: 600; color: var(--text); }
+.feedback-btn {
+  padding: 6px 16px; border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: transparent; color: var(--muted);
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.feedback-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.feedback-btn.yes:hover { border-color: var(--accent2); color: var(--accent2); }
+.feedback-btn.no:hover { border-color: var(--danger); color: var(--danger); }
+
+/* Related topics */
+.related-topics { margin-top: 28px; }
+.related-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+.related-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.related-tag {
+  padding: 6px 14px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  font-size: 13px; color: var(--text); cursor: pointer;
+  transition: all 0.15s; font-weight: 500;
+}
+.related-tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(124,106,247,0.08); }
+
+/* Guide sidebar section nav */
+.guide-section-nav { padding: 6px 12px; }
+.guide-nav-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px; border-radius: 8px;
+  cursor: pointer; transition: all 0.15s;
+  margin-bottom: 2px;
+}
+.guide-nav-item:hover { background: var(--surface2); }
+.guide-nav-item.active { background: rgba(124,106,247,0.1); }
+.guide-nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--muted2); flex-shrink: 0; transition: background 0.2s;
+}
+.guide-nav-item.active .guide-nav-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.guide-nav-label { font-size: 12px; font-weight: 600; color: var(--muted); line-height: 1.3; }
+.guide-nav-item.active .guide-nav-label { color: var(--text); }
+
+/* Guide creator app (inside app, re-uses same layout) */
+#guideCreatorApp {
+  display: none; padding: 40px 48px 80px; max-width: 760px;
+  animation: fadeUp 0.35s ease;
+}
 </style>
 </head>
 <body>
@@ -504,6 +663,7 @@ h1 {
     <div class="mode-tabs">
       <button class="mode-tab active" id="tabPlan" onclick="switchWizardMode('plan')">📋 Learning Plan</button>
       <button class="mode-tab" id="tabCourse" onclick="switchWizardMode('course')">📖 Course</button>
+      <button class="mode-tab" id="tabGuide" onclick="switchWizardMode('guide')">📄 Guide</button>
     </div>
 
     <!-- Plan wizard -->
@@ -552,6 +712,51 @@ h1 {
       </div>
     </div>
 
+    <!-- Guide creator wizard -->
+    <div id="guideCreatorWizard">
+      <div class="q-card">
+        <div class="course-creator-label">What can I help you learn?</div>
+        <input class="course-topic-input" id="guideTopicInput" type="text"
+          placeholder="e.g., JavaScript, Cryptocurrency, Photography, Chess..."
+          oninput="updateGuideGenBtn()" />
+
+        <div id="guidePersonalization">
+          <div class="personalization-group">
+            <div class="course-creator-label">Skill level <button class="skip-link" onclick="skipGuidePersonalization()">Skip personalization →</button></div>
+            <div class="chip-row">
+              <div class="chip" onclick="selectGuideChip(this,'level','Beginner')">🌱 Beginner</div>
+              <div class="chip" onclick="selectGuideChip(this,'level','Intermediate')">⚡ Intermediate</div>
+              <div class="chip" onclick="selectGuideChip(this,'level','Advanced')">🔥 Advanced</div>
+              <input class="chip-custom" id="guideCustomLevel" placeholder="Custom..." oninput="setGuideCustomChip('level',this.value)" />
+            </div>
+          </div>
+          <div class="personalization-group">
+            <div class="course-creator-label">Learning style</div>
+            <div class="chip-row">
+              <div class="chip" onclick="selectGuideChip(this,'style','Visual')">👁 Visual</div>
+              <div class="chip" onclick="selectGuideChip(this,'style','Auditory')">👂 Auditory</div>
+              <div class="chip" onclick="selectGuideChip(this,'style','Kinesthetic')">🤝 Kinesthetic</div>
+              <input class="chip-custom" id="guideCustomStyle" placeholder="Custom..." oninput="setGuideCustomChip('style',this.value)" />
+            </div>
+          </div>
+          <div class="personalization-group">
+            <div class="course-creator-label">What would you like to achieve?</div>
+            <div class="chip-row">
+              <div class="chip" onclick="selectGuideChip(this,'goal','Build projects')">🚀 Build projects</div>
+              <div class="chip" onclick="selectGuideChip(this,'goal','Learn theory')">📚 Learn theory</div>
+              <div class="chip" onclick="selectGuideChip(this,'goal','Get certified')">🏆 Get certified</div>
+              <div class="chip" onclick="selectGuideChip(this,'goal','Career change')">💼 Career change</div>
+              <input class="chip-custom" id="guideCustomGoal" placeholder="Custom..." oninput="setGuideCustomChip('goal',this.value)" />
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-course-generate" id="guideGenBtn" onclick="startGuideGenerate()" disabled>
+          ✦ Generate Guide
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -582,6 +787,9 @@ h1 {
         </div>
         <div class="sidebar-item" id="navCourse" onclick="showCourseCreatorApp()">
           <span class="item-icon">📖</span> Course
+        </div>
+        <div class="sidebar-item" id="navGuide" onclick="showGuideCreatorApp()">
+          <span class="item-icon">📄</span> Guide
         </div>
         <div class="sidebar-item" style="opacity:0.35;cursor:default;">
           <span class="item-icon">🗺️</span> Roadmap
@@ -649,7 +857,96 @@ h1 {
         </button>
       </div>
 
-      <!-- LESSON VIEW -->
+      <!-- GUIDE CREATOR (inside app) -->
+      <div id="guideCreatorApp">
+        <div class="plan-breadcrumb">Create with AI</div>
+        <div class="plan-title" style="margin-bottom:28px;">Create a Guide</div>
+
+        <div class="course-creator-label">What can I help you learn?</div>
+        <input class="cca-topic-input" id="appGuideTopicInput" type="text"
+          placeholder="e.g., JavaScript, Cryptocurrency, Photography, Chess..."
+          oninput="updateAppGuideGenBtn()" />
+
+        <div id="appGuidePersonalization">
+          <div class="personalization-group">
+            <div class="course-creator-label">Skill level <button class="skip-link" onclick="skipAppGuidePersonalization()">Skip →</button></div>
+            <div class="chip-row">
+              <div class="chip" onclick="selectAppGuideChip(this,'level','Beginner')">🌱 Beginner</div>
+              <div class="chip" onclick="selectAppGuideChip(this,'level','Intermediate')">⚡ Intermediate</div>
+              <div class="chip" onclick="selectAppGuideChip(this,'level','Advanced')">🔥 Advanced</div>
+              <input class="chip-custom" id="appGuideCustomLevel" placeholder="Custom..." oninput="setAppGuideCustomChip('level',this.value)" />
+            </div>
+          </div>
+          <div class="personalization-group">
+            <div class="course-creator-label">Learning style</div>
+            <div class="chip-row">
+              <div class="chip" onclick="selectAppGuideChip(this,'style','Visual')">👁 Visual</div>
+              <div class="chip" onclick="selectAppGuideChip(this,'style','Auditory')">👂 Auditory</div>
+              <div class="chip" onclick="selectAppGuideChip(this,'style','Kinesthetic')">🤝 Kinesthetic</div>
+              <input class="chip-custom" id="appGuideCustomStyle" placeholder="Custom..." oninput="setAppGuideCustomChip('style',this.value)" />
+            </div>
+          </div>
+          <div class="personalization-group">
+            <div class="course-creator-label">What would you like to achieve?</div>
+            <div class="chip-row">
+              <div class="chip" onclick="selectAppGuideChip(this,'goal','Build projects')">🚀 Build projects</div>
+              <div class="chip" onclick="selectAppGuideChip(this,'goal','Learn theory')">📚 Learn theory</div>
+              <div class="chip" onclick="selectAppGuideChip(this,'goal','Get certified')">🏆 Get certified</div>
+              <div class="chip" onclick="selectAppGuideChip(this,'goal','Career change')">💼 Career change</div>
+              <input class="chip-custom" id="appGuideCustomGoal" placeholder="Custom..." oninput="setAppGuideCustomChip('goal',this.value)" />
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-course-generate" id="appGuideGenBtn" onclick="startAppGuideGenerate()" disabled>
+          ✦ Generate Guide
+        </button>
+      </div>
+
+      <!-- GUIDE VIEW -->
+      <div id="guideView">
+        <div class="guide-layout">
+          <div class="guide-main" id="guideMain">
+            <button class="back-btn" onclick="showGuideCreatorApp()">← Create New Guide</button>
+            <div class="guide-header">
+              <div class="guide-label">Guide</div>
+              <div class="guide-title" id="guideTitle"></div>
+              <div class="guide-prefs" id="guidePrefs"></div>
+              <div style="margin-top:16px;display:flex;gap:10px;">
+                <button class="action-btn action-btn-ghost" onclick="openRevise()">↺ Revise Guide</button>
+                <button class="action-btn action-btn-danger" onclick="showGuideCreatorApp()">🗑 Remove</button>
+              </div>
+            </div>
+            <div id="guideSectionsContainer"></div>
+            <div class="guide-feedback" id="guideFeedback" style="display:none;">
+              <span class="guide-feedback-q">Was this guide helpful?</span>
+              <button class="feedback-btn yes" onclick="handleFeedback(true)">👍 Yes</button>
+              <button class="feedback-btn no" onclick="handleFeedback(false)">👎 No</button>
+            </div>
+            <div class="related-topics" id="guideRelated" style="display:none;">
+              <div class="related-label">Explore further</div>
+              <div class="related-list" id="guideRelatedList"></div>
+            </div>
+          </div>
+
+          <!-- GUIDE AI ASSISTANT -->
+          <div class="ai-instructor" id="guideInstructor">
+            <div class="instructor-header">
+              <div class="instructor-dot"></div>
+              <div class="instructor-title-text">AI Assistant</div>
+            </div>
+            <div class="instructor-messages" id="guideMessages"></div>
+            <div class="suggested-qs" id="guideSuggestedQs"></div>
+            <div class="instructor-input-area">
+              <textarea class="instructor-input" id="guideInput"
+                placeholder="Ask anything about this guide..."
+                onkeydown="handleGuideKey(event)"
+                oninput="autoResize(this)" rows="1"></textarea>
+              <button class="send-btn" id="guideSendBtn" onclick="sendGuideMessage()">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div id="lessonView" style="display:none;">
         <div class="lesson-layout">
           <div class="lesson-main">
@@ -703,7 +1000,9 @@ const STEP_LABELS = ['Goal','Field','Level','Focus','Context'];
 
 let current = 0, answers = {}, planData = null;
 let currentCourse = null, instructorHistory = [], loadingInterval;
-let activeMode = 'plan'; // 'plan' or 'course'
+let activeMode = 'plan'; // 'plan' | 'course' | 'guide'
+let guideData = null, guideHistory = [], guidePrefs = {};
+let appGuidePrefs = {};
 
 // ── WIZARD MODE SWITCHING ──
 
@@ -711,18 +1010,378 @@ function switchWizardMode(mode) {
   activeMode = mode;
   document.getElementById('tabPlan').classList.toggle('active', mode === 'plan');
   document.getElementById('tabCourse').classList.toggle('active', mode === 'course');
+  document.getElementById('tabGuide').classList.toggle('active', mode === 'guide');
   document.getElementById('planWizard').style.display = mode === 'plan' ? 'block' : 'none';
   document.getElementById('courseCreatorWizard').style.display = mode === 'course' ? 'block' : 'none';
-  if (mode === 'plan') {
-    document.getElementById('wizardTitle').innerHTML = 'AI Learning Plan<br/>Generator';
-    document.getElementById('wizardSubtitle').textContent = 'Answer 5 questions → get your personalized plan';
-  } else {
-    document.getElementById('wizardTitle').innerHTML = 'AI Course<br/>Creator';
-    document.getElementById('wizardSubtitle').textContent = 'Type a topic → get a structured course';
+  document.getElementById('guideCreatorWizard').style.display = mode === 'guide' ? 'block' : 'none';
+  const titles = {
+    plan:   ['AI Learning Plan<br/>Generator', 'Answer 5 questions → get your personalized plan'],
+    course: ['AI Course<br/>Creator', 'Type a topic → get a structured course'],
+    guide:  ['AI Guide<br/>Creator', 'Type a topic → get a concise guide']
+  };
+  document.getElementById('wizardTitle').innerHTML = titles[mode][0];
+  document.getElementById('wizardSubtitle').textContent = titles[mode][1];
+}
+
+// ── GUIDE PERSONALIZATION (WIZARD) ──
+
+function selectGuideChip(el, key, value) {
+  const row = el.closest('.chip-row');
+  row.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  guidePrefs[key] = value;
+  // clear custom input
+  const customInput = row.querySelector('.chip-custom');
+  if (customInput) customInput.value = '';
+}
+
+function setGuideCustomChip(key, value) {
+  guidePrefs[key] = value || undefined;
+  // deselect preset chips in the same group
+  const inputEl = document.getElementById(`guideCustom${key.charAt(0).toUpperCase()+key.slice(1)}`);
+  if (inputEl) {
+    inputEl.closest('.chip-row').querySelectorAll('.chip').forEach(c => {
+      if (value) c.classList.remove('selected');
+    });
   }
 }
 
-function selectFormat(el) { /* Only Course is active, others are disabled */ }
+function skipGuidePersonalization() {
+  guidePrefs = {};
+  document.getElementById('guidePersonalization').style.display = 'none';
+}
+
+// ── GUIDE PERSONALIZATION (APP) ──
+
+function selectAppGuideChip(el, key, value) {
+  const row = el.closest('.chip-row');
+  row.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  appGuidePrefs[key] = value;
+  const customInput = row.querySelector('.chip-custom');
+  if (customInput) customInput.value = '';
+}
+
+function setAppGuideCustomChip(key, value) {
+  appGuidePrefs[key] = value || undefined;
+  const inputEl = document.getElementById(`appGuideCustom${key.charAt(0).toUpperCase()+key.slice(1)}`);
+  if (inputEl) {
+    if (value) inputEl.closest('.chip-row').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  }
+}
+
+function skipAppGuidePersonalization() {
+  appGuidePrefs = {};
+  document.getElementById('appGuidePersonalization').style.display = 'none';
+}
+
+function updateGuideGenBtn() {
+  document.getElementById('guideGenBtn').disabled = !document.getElementById('guideTopicInput').value.trim();
+}
+
+function updateAppGuideGenBtn() {
+  document.getElementById('appGuideGenBtn').disabled = !document.getElementById('appGuideTopicInput').value.trim();
+}
+
+async function startGuideGenerate() {
+  const topic = document.getElementById('guideTopicInput').value.trim();
+  if (!topic) return;
+  await runGuideGeneration(topic, guidePrefs);
+}
+
+async function startAppGuideGenerate() {
+  const topic = document.getElementById('appGuideTopicInput').value.trim();
+  if (!topic) return;
+  await runGuideGeneration(topic, appGuidePrefs);
+}
+
+// ── GUIDE CREATOR APP VIEW ──
+
+function showGuideCreatorApp() {
+  hideAllMainViews();
+  document.getElementById('guideCreatorApp').style.display = 'block';
+  setNavActive('navGuide');
+  document.getElementById('sidebarContent').innerHTML = '';
+  // reset app guide fields
+  document.getElementById('appGuideTopicInput').value = '';
+  document.getElementById('appGuideGenBtn').disabled = true;
+  appGuidePrefs = {};
+  document.getElementById('appGuidePersonalization').style.display = 'block';
+  document.getElementById('appGuidePersonalization').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  ['appGuideCustomLevel','appGuideCustomStyle','appGuideCustomGoal'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+}
+
+// ── GUIDE GENERATION ──
+
+async function runGuideGeneration(topic, prefs = {}) {
+  activeMode = 'guide';
+  hideAllMainViews();
+  document.getElementById('wizardPage').style.display = 'none';
+  document.getElementById('appPage').style.display = 'none';
+  const lp = document.getElementById('loadingPage');
+  lp.style.display = 'grid';
+  lp.querySelector('.loading-title').innerHTML = 'Crafting your guide<span class="loading-dots"></span>';
+
+  let i = 0;
+  const lsEl = document.getElementById('loadingStatus');
+  const msgs = ['Researching the topic','Writing introduction','Building core concepts','Adding examples','Compiling advanced topics'];
+  lsEl.textContent = msgs[0];
+  loadingInterval = setInterval(() => { lsEl.textContent = msgs[++i % msgs.length]; }, 1800);
+
+  const prefsText = [
+    prefs.level && `Skill level: ${prefs.level}`,
+    prefs.style && `Learning style: ${prefs.style}`,
+    prefs.goal  && `Goal: ${prefs.goal}`
+  ].filter(Boolean).join(', ');
+
+  try {
+    const prompt = `You are an expert educator. Create a comprehensive guide for "${topic}".
+${prefsText ? `Personalization: ${prefsText}` : ''}
+
+Return ONLY valid JSON (no markdown, no fences):
+{
+  "title": "Concise guide title (e.g. '${topic}: A Concise Guide')",
+  "introduction": "2-3 paragraph HTML introduction explaining what ${topic} is, why it matters, and what this guide covers. Use <p> tags.",
+  "sections": [
+    {
+      "badge": "Core Concepts",
+      "title": "Foundational Concepts",
+      "content": "HTML content with <p>, <ul>, <li>, <strong>, <code> tags. 3-5 key concepts explained clearly."
+    },
+    {
+      "badge": "Tools & Technologies",
+      "title": "Key Tools & Technologies",
+      "content": "HTML content listing and explaining the most important tools/technologies for ${topic}."
+    },
+    {
+      "badge": "Examples",
+      "title": "Practical Examples",
+      "content": "HTML content with real examples, code snippets in <pre><code> where relevant."
+    },
+    {
+      "badge": "Advanced Topics",
+      "title": "Advanced Features & Concepts",
+      "content": "HTML content covering advanced/niche topics for those wanting to go deeper."
+    }
+  ],
+  "relatedTopics": ["Related Topic 1", "Related Topic 2", "Related Topic 3", "Related Topic 4"]
+}
+
+Make content rich, practical, and tailored${prefsText ? ` to the ${prefsText}` : ''}. Each section should have 150-250 words.`;
+
+    const raw = await callGroq([{role:'user', content:prompt}], 4000);
+    clearInterval(loadingInterval);
+
+    let parsed;
+    try {
+      const clean = raw.replace(/```json|```/g,'').trim();
+      parsed = JSON.parse(clean);
+    } catch {
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('Could not parse guide. Please try again.');
+      parsed = JSON.parse(match[0]);
+    }
+
+    guideData = parsed;
+    guideData.topic = topic;
+    guideData.prefs = prefs;
+    guideHistory = [];
+
+    lp.style.display = 'none';
+    document.getElementById('appPage').style.display = 'block';
+    renderGuideSidebar();
+    renderGuideView();
+    document.getElementById('guideView').style.display = 'block';
+    setNavActive('navGuide');
+
+  } catch(err) {
+    clearInterval(loadingInterval);
+    lp.innerHTML = `<div style="text-align:center;padding:20px;">
+      <p style="color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:20px;">Error: ${err.message}</p>
+      <button class="btn btn-ghost" onclick="location.reload()">← Start Over</button>
+    </div>`;
+  }
+}
+
+function renderGuideSidebar() {
+  const el = document.getElementById('sidebarContent');
+  let html = `<div style="padding:8px 12px 4px;"><div class="sidebar-section-label">Sections</div></div>
+  <div class="guide-section-nav">
+    <div class="guide-nav-item active" id="gnav-intro" onclick="scrollGuideSection('guide-intro')">
+      <div class="guide-nav-dot"></div>
+      <div class="guide-nav-label">Introduction</div>
+    </div>`;
+  if (guideData?.sections) {
+    guideData.sections.forEach((s,i) => {
+      html += `<div class="guide-nav-item" id="gnav-${i}" onclick="scrollGuideSection('gsec-${i}')">
+        <div class="guide-nav-dot"></div>
+        <div class="guide-nav-label">${s.badge || s.title}</div>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+function scrollGuideSection(id) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.guide-nav-item').forEach(e => e.classList.remove('active'));
+}
+
+function renderGuideView() {
+  document.getElementById('guideTitle').textContent = guideData.title;
+
+  // Prefs tags
+  const prefsEl = document.getElementById('guidePrefs');
+  const tags = [
+    guideData.prefs?.level && `📊 ${guideData.prefs.level}`,
+    guideData.prefs?.style && `🎯 ${guideData.prefs.style}`,
+    guideData.prefs?.goal  && `🎓 ${guideData.prefs.goal}`
+  ].filter(Boolean);
+  prefsEl.innerHTML = tags.map(t => `<span class="guide-pref-tag">${t}</span>`).join('');
+
+  // Sections
+  const container = document.getElementById('guideSectionsContainer');
+  let html = '';
+
+  // Introduction
+  html += `<div class="guide-section-block" id="guide-intro">
+    <div class="guide-section-badge">📖 Introduction</div>
+    <div class="guide-content">${guideData.introduction || ''}</div>
+    <div class="guide-divider"></div>
+  </div>`;
+
+  guideData.sections.forEach((section, i) => {
+    html += `<div class="guide-section-block" id="gsec-${i}">
+      <div class="guide-section-badge">${section.badge || `Section ${i+1}`}</div>
+      <div class="guide-section-title">${section.title}</div>
+      <div class="guide-content">${section.content}</div>
+      ${i < guideData.sections.length - 1 ? '<div class="guide-divider"></div>' : ''}
+    </div>`;
+  });
+
+  container.innerHTML = html;
+
+  // Show feedback + related
+  setTimeout(() => {
+    document.getElementById('guideFeedback').style.display = 'flex';
+    if (guideData.relatedTopics?.length) {
+      const rel = document.getElementById('guideRelated');
+      const list = document.getElementById('guideRelatedList');
+      list.innerHTML = guideData.relatedTopics.map(t =>
+        `<div class="related-tag" onclick="runGuideGeneration('${t.replace(/'/g,"\\'")}', {})">${t}</div>`
+      ).join('');
+      rel.style.display = 'block';
+    }
+  }, 200);
+
+  // Init AI assistant
+  initGuideAssistant();
+}
+
+async function initGuideAssistant() {
+  const msgs = document.getElementById('guideMessages');
+  msgs.innerHTML = '';
+  document.getElementById('guideSuggestedQs').innerHTML = '';
+  addGuideMsg('ai', `Hello! I'm your AI Assistant for <strong>${guideData.title}</strong>. Ask me anything about this topic — I'll give you clear, focused answers.`);
+
+  try {
+    const sqRaw = await callGroq([{role:'user', content:`Generate 4 short questions a learner might ask after reading a guide about "${guideData.topic}". Return JSON array only: ["Q1","Q2","Q3","Q4"]`}], 300);
+    const match = sqRaw.match(/\[[\s\S]*?\]/);
+    const qs = match ? JSON.parse(match[0]) : [];
+    renderGuideSuggestedQs(qs.length ? qs : defaultGuideQs());
+  } catch {
+    renderGuideSuggestedQs(defaultGuideQs());
+  }
+}
+
+function defaultGuideQs() {
+  const t = guideData?.topic || 'this topic';
+  return [`What are the most important concepts in ${t}?`, `How do I get started with ${t}?`, `What are common mistakes beginners make?`, `What should I learn after this guide?`];
+}
+
+function renderGuideSuggestedQs(qs) {
+  const el = document.getElementById('guideSuggestedQs');
+  let html = `<div class="suggested-label">Suggested questions</div>`;
+  qs.forEach(q => {
+    html += `<button class="sugg-q" onclick="askGuideSuggested(this,'${q.replace(/'/g,"\\'").replace(/"/g,'\\"')}')">${q}</button>`;
+  });
+  el.innerHTML = html;
+}
+
+function askGuideSuggested(btn, q) {
+  btn.disabled = true; btn.style.opacity = '0.4';
+  document.getElementById('guideInput').value = q;
+  sendGuideMessage();
+}
+
+function addGuideMsg(role, html) {
+  const msgs = document.getElementById('guideMessages');
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  div.innerHTML = `<div class="msg-avatar">${role==='ai'?'🤖':'👤'}</div><div class="msg-bubble">${html}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addGuideTyping() {
+  const msgs = document.getElementById('guideMessages');
+  const div = document.createElement('div');
+  div.id = 'guideTyping'; div.className = 'msg msg-ai typing-indicator';
+  div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendGuideMessage() {
+  const input = document.getElementById('guideInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; autoResize(input);
+  document.getElementById('guideSendBtn').disabled = true;
+  addGuideMsg('user', text);
+  addGuideTyping();
+  guideHistory.push({role:'user', content:text});
+
+  try {
+    const reply = await callGroq([
+      {role:'system', content:`You are an AI Assistant for the guide "${guideData?.title}" about "${guideData?.topic}". ${guideData?.prefs?.level ? `Reader level: ${guideData.prefs.level}.` : ''} Be helpful, concise (under 130 words unless a code example is needed). Use **bold** for key terms.`},
+      ...guideHistory
+    ], 500);
+    document.getElementById('guideTyping')?.remove();
+    guideHistory.push({role:'assistant', content:reply});
+    addGuideMsg('ai', reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>'));
+  } catch(err) {
+    document.getElementById('guideTyping')?.remove();
+    addGuideMsg('ai', `Sorry, error: ${err.message}`);
+  }
+  document.getElementById('guideSendBtn').disabled = false;
+}
+
+function handleGuideKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendGuideMessage(); }
+}
+
+function handleFeedback(positive) {
+  const fb = document.getElementById('guideFeedback');
+  fb.innerHTML = `<span style="color:${positive ? 'var(--accent2)' : 'var(--muted)'};font-weight:600;">
+    ${positive ? '👍 Thanks for your feedback!' : '👎 Thanks! We\'ll use this to improve.'}</span>`;
+}
+
+// ── HELPERS ──
+
+function hideAllMainViews() {
+  ['planView','lessonView','courseCreatorApp','guideCreatorApp','guideView'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+function setNavActive(activeId) {
+  ['navPlan','navCourse','navGuide'].forEach(id => {
+    document.getElementById(id).classList.toggle('active', id === activeId);
+  });
+}
 
 function toggleCourseContext() {
   const cb = document.getElementById('contextCheckbox');
@@ -747,11 +1406,9 @@ async function startCourseGenerate() {
 // ── COURSE CREATOR INSIDE APP ──
 
 function showCourseCreatorApp() {
-  document.getElementById('planView').style.display = 'none';
-  document.getElementById('lessonView').style.display = 'none';
+  hideAllMainViews();
   document.getElementById('courseCreatorApp').style.display = 'block';
-  document.getElementById('navPlan').classList.remove('active');
-  document.getElementById('navCourse').classList.add('active');
+  setNavActive('navCourse');
   document.getElementById('sidebarContent').innerHTML = '';
 }
 
@@ -832,11 +1489,9 @@ Create 5-7 modules with 4-6 lessons each. Use specific, concrete lesson names di
     document.getElementById('appPage').style.display = 'block';
     renderSidebar('plan');
     renderPlanView('course');
+    hideAllMainViews();
     document.getElementById('planView').style.display = 'block';
-    document.getElementById('lessonView').style.display = 'none';
-    document.getElementById('courseCreatorApp').style.display = 'none';
-    document.getElementById('navCourse').classList.add('active');
-    document.getElementById('navPlan').classList.remove('active');
+    setNavActive('navCourse');
 
   } catch (err) {
     clearInterval(loadingInterval);
@@ -1000,13 +1655,14 @@ Create 5-7 steps with 4-6 courses each. Use specific real technology/concept nam
     }
 
     planData = parsed;
+    activeMode = 'plan';
     lp.style.display = 'none';
     document.getElementById('appPage').style.display = 'block';
     renderSidebar('plan');
     renderPlanView('plan');
+    hideAllMainViews();
     document.getElementById('planView').style.display = 'block';
-    document.getElementById('lessonView').style.display = 'none';
-    document.getElementById('courseCreatorApp').style.display = 'none';
+    setNavActive('navPlan');
 
   } catch (err) {
     clearInterval(loadingInterval);
@@ -1087,16 +1743,9 @@ function renderPlanView(mode) {
 }
 
 function showPlanView() {
+  hideAllMainViews();
   document.getElementById('planView').style.display = 'block';
-  document.getElementById('lessonView').style.display = 'none';
-  document.getElementById('courseCreatorApp').style.display = 'none';
-  if (activeMode === 'course') {
-    document.getElementById('navCourse').classList.add('active');
-    document.getElementById('navPlan').classList.remove('active');
-  } else {
-    document.getElementById('navPlan').classList.add('active');
-    document.getElementById('navCourse').classList.remove('active');
-  }
+  setNavActive(activeMode === 'course' ? 'navCourse' : 'navPlan');
   renderSidebar('plan');
 }
 
@@ -1114,11 +1763,9 @@ async function openCourse(si, ci) {
   currentCourse = { si, ci, name: courseName, stepTitle: step.title, stepNum: si+1 };
   instructorHistory = [];
 
-  document.getElementById('planView').style.display = 'none';
+  hideAllMainViews();
   document.getElementById('lessonView').style.display = 'block';
-  document.getElementById('courseCreatorApp').style.display = 'none';
-  document.getElementById('navPlan').classList.remove('active');
-  document.getElementById('navCourse').classList.remove('active');
+  setNavActive('');
   renderSidebar('lesson');
 
   document.getElementById('lessonTitle').textContent = courseName;
@@ -1246,7 +1893,8 @@ function autoResize(el) {
 }
 
 function openRevise() {
-  document.getElementById('reviseModal').querySelector('h3').textContent = activeMode === 'course' ? '✏️ Revise Course' : '✏️ Revise Plan';
+  const titles = { plan: '✏️ Revise Plan', course: '✏️ Revise Course', guide: '✏️ Revise Guide' };
+  document.getElementById('reviseModal').querySelector('h3').textContent = titles[activeMode] || '✏️ Revise';
   document.getElementById('reviseModal').classList.add('open');
   document.getElementById('reviseInput').focus();
 }
@@ -1257,9 +1905,10 @@ async function applyRevise() {
   document.getElementById('reviseInput').value = '';
   closeRevise();
   if (activeMode === 'course') {
-    // Re-run course generation with revision note baked into context
-    const topic = planData?.title || 'the same topic';
-    await runCourseGeneration(topic, `Revision: ${note}`);
+    await runCourseGeneration(planData?.title || 'the same topic', `Revision: ${note}`);
+  } else if (activeMode === 'guide') {
+    const prefs = { ...guideData?.prefs, revision: note };
+    await runGuideGeneration(guideData?.topic || 'the same topic', prefs);
   } else {
     await startGenerate(note);
   }
@@ -1267,17 +1916,24 @@ async function applyRevise() {
 document.getElementById('reviseModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeRevise(); });
 
 function startOver() {
-  current = 0; answers = {}; planData = null; currentCourse = null; instructorHistory = [];
+  current = 0; answers = {}; planData = null; currentCourse = null;
+  instructorHistory = []; guideData = null; guideHistory = {};
+  guidePrefs = {}; appGuidePrefs = {};
   activeMode = 'plan';
   document.getElementById('appPage').style.display = 'none';
   document.getElementById('loadingPage').style.display = 'none';
   document.getElementById('wizardPage').style.display = 'flex';
+  // Reset guide creator fields
+  document.getElementById('guideTopicInput').value = '';
+  document.getElementById('guideGenBtn').disabled = true;
+  document.getElementById('guidePersonalization').style.display = 'block';
   // Reset course creator fields
   document.getElementById('courseTopicInput').value = '';
   document.getElementById('courseGenBtn').disabled = true;
   document.getElementById('contextCheckbox').checked = false;
   document.getElementById('courseContextArea').style.display = 'none';
-  // Reset to plan tab
+  // Reset chips
+  document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
   switchWizardMode('plan');
   window.scrollTo({top:0});
   renderProgress(); renderQuestion();
